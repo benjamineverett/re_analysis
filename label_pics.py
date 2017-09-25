@@ -9,6 +9,7 @@ import numpy as np # numpy!!
 # from load_image import ViewPhoto
 import pandas as pd
 import pdb
+import time
 
 class Labeler(object):
     '''
@@ -76,7 +77,7 @@ class Labeler(object):
                     list_of_labels.append(['{}_pic{}.jpg'.format(pict,i+1),self.label])
                     list_of_labels.append(['{}_flip{}.jpg'.format(pict,i+1),self.label])
                     # save every 100 labels
-                    if pic_counter == 100:
+                    if pic_counter % 100 == 0:
                         self._save_labels(list_of_labels)
             pic_counter += 1
         # close all windows
@@ -157,9 +158,9 @@ class Labeler(object):
         if os.path.isfile('data/labeled.pkl'):
             old_df = pd.read_pickle('data/labeled.pkl')
             # save old df as backup
-            old_df.to_pickle('data/backup_old_{}_labeled.pkl'.format(time.ctime().lower().replace(' ','_')))
+            old_df.to_pickle('data/backups/backup_labeled_old_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
             self.df = pd.DataFrame(labeled_pics,columns=['filename', 'label'])
-            self.df.to_pickle('data/backup_new_{}_labeled.pkl'.format(time.ctime().lower().replace(' ','_')))
+            self.df.to_pickle('data/backups/backup_labeled_new_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
             new_df = old_df.append(self.df)
             new_df.reset_index(inplace=True,drop=True)
             new_df.to_pickle('data/labeled.pkl')
@@ -257,6 +258,10 @@ class Resizer(object):
                 # append to list as [filename, np.array]
                 if to_np_array:
                     array.append([picture, np.array(cv2.imread('{}/{}'.format(self.resized_file_path,picture)))])
+                    if counter % 1000 == 0:
+                        if to_np_array:
+                            print('--------------- Saving data ----------------')
+                            self._save_df(data=array)
         # append list to dataframe
         if to_np_array:
             self._save_df(data=array)
@@ -314,10 +319,10 @@ class Resizer(object):
         if os.path.isfile('data/resized.pkl'):
             # read and save old df
             old_df = pd.read_pickle('data/resized.pkl')
-            old_df.to_pickle('data/backup_old_{}_resized.pkl'.format(time.ctime().lower().replace(' ','_')))
+            old_df.to_pickle('data/backups/backup_resized_old_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
             # create and back up new df
-            self.df = pd.DataFrame(labeled_pics,columns=['filename', 'np_array'])
-            self.df.to_pickle('data/backup_new_{}_resized.pkl'.format(time.ctime().lower().replace(' ','_')))
+            self.df = pd.DataFrame(data,columns=['filename', 'np_array'])
+            self.df.to_pickle('data/backups/backup_resized_new_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
             # combine two dfs
             new_df = old_df.append(self.df)
             new_df.reset_index(inplace=True,drop=True)
@@ -325,7 +330,7 @@ class Resizer(object):
             new_df.to_pickle('data/resized.pkl')
         else:
             # create new df and save as pickle
-            self.df = pd.DataFrame(labeled_pics,columns=['filename', 'np_array'])
+            self.df = pd.DataFrame(data,columns=['filename', 'np_array'])
             self.df.to_pickle('data/resized.pkl')
 
     ''' --------------- END HIDDEN METHODS --------------- '''

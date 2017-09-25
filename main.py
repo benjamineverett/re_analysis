@@ -40,16 +40,13 @@ def label_pics(file_path_to_label,file_path_of_labeled):
     instantiated_class = Labeler(file_path_to_label,file_path_of_labeled)
     instantiated_class.label_pics('labeled')
 
-def resize_label_pics(filepath_to_resize,
+def resize_labeled_pics(filepath_to_resize,
                     filepath_store_resized,
-                    dataframe_name,
                     num_pixels,
                     show_resized_pic=False):
     from label_pics import Resizer
-
     instantiated_class = Resizer(filepath=filepath_to_resize,
                                     resized_file_path=filepath_store_resized,
-                                    dataframe_name=dataframe_name,
                                     num_pixels=num_pixels,
                                     show_resized_pic=show_resized_pic)
 
@@ -60,7 +57,7 @@ def run_NN():
     from cnn import NeuralNetwork
     instantiated_class = NeuralNetwork()
     instantiated_class.import_data(label_file_path='data/labeled.pkl',
-                                    array_file_path='data/dataframe.pkl',
+                                    array_file_path='data/resized.pkl',
                                     merge_on='filename',)
 
     instantiated_class.train_test_split(X_col_name='np_array',
@@ -86,9 +83,9 @@ if __name__ == '__main__':
     # get_them_pics('brewerytown',19121)
     # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/Pics/brewerytown/00_random',
             #    file_path_of_labeled='/Users/benjaminreverett/Desktop/Pics/00_labeled')
-    # resize_label_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/Pics/00_labeled',
-                        # filepath_store_resized='resized',
-                        # num_pixels=50,
-                        # show_resized_pic=False
-                        # )
-    run_NN()
+    resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/Pics/00_labeled',
+                        filepath_store_resized='resized',
+                        num_pixels=50,
+                        show_resized_pic=False
+                        )
+    # run_NN()
