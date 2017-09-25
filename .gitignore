@@ -1,0 +1,4 @@
+models/
+graph/
+*.pkl
+git_ignore/
