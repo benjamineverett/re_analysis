@@ -75,11 +75,14 @@ class Labeler(object):
                     # append label and label for flip pic
                     list_of_labels.append(['{}_pic{}.jpg'.format(pict,i+1),self.label])
                     list_of_labels.append(['{}_flip{}.jpg'.format(pict,i+1),self.label])
+                    # save every 100 labels
+                    if pic_counter == 100:
+                        self._save_labels(list_of_labels)
             pic_counter += 1
         # close all windows
         cv2.destroyAllWindows()
         # save labels to file
-        self._save_labels(list_of_labels,save_to_file=save_label_file_path)
+        self._save_labels(list_of_labels)
 
     ''' --------------- BEGIN HIDDEN METHODS --------------- '''
 
@@ -149,17 +152,20 @@ class Labeler(object):
             cv2.destroyWindow(pic_title)
             self.label = 0
 
-    def _save_labels(self,labeled_pics,save_to_file):
+    def _save_labels(self,labeled_pics):
         # check if dataframe exists, if not, create new dataframe
-        if os.path.isfile('{}.pkl'.format(save_to_file)):
-            old_df = pd.read_pickle('{}.pkl'.format(save_to_file))
+        if os.path.isfile('data/labeled.pkl'):
+            old_df = pd.read_pickle('data/labeled.pkl')
+            # save old df as backup
+            old_df.to_pickle('data/backup_old_{}_labeled.pkl'.format(time.ctime().lower().replace(' ','_')))
             self.df = pd.DataFrame(labeled_pics,columns=['filename', 'label'])
+            self.df.to_pickle('data/backup_new_{}_labeled.pkl'.format(time.ctime().lower().replace(' ','_')))
             new_df = old_df.append(self.df)
             new_df.reset_index(inplace=True,drop=True)
-            new_df.to_pickle('{}.pkl'.format(save_to_file))
+            new_df.to_pickle('data/labeled.pkl')
         else:
             self.df = pd.DataFrame(labeled_pics,columns=['filename', 'label'])
-            self.df.to_pickle('{}.pkl'.format(save_to_file))
+            self.df.to_pickle('data/labeled.pkl')
 
     def _create_list_files(self):
         '''
@@ -199,14 +205,13 @@ class Resizer(object):
     def __init__(self,
                 filepath,
                 resized_file_path,
-                dataframe_name,
                 num_pixels,
                 show_resized_pic=False):
         self.filepath = filepath
         self.resized_file_path = resized_file_path
         self.num_pixels = num_pixels
         self.show_resized_pic = show_resized_pic
-        self.dataframe_name= dataframe_name
+
 
     def resize_pics(self,to_np_array=True):
         '''
@@ -305,18 +310,23 @@ class Resizer(object):
             -------
                 Saves data as pickeled panda's data frame
         '''
-        # check to see if data frame exists
-        # if exists: append to that data frame
-        # else: create new data frame
-        if os.path.isfile('{}/{}.pkl'.format(self.resized_file_path,self.dataframe_name)):
-            self.df = pd.DataFrame(data,columns=['filename','np_array'])
-            old_df = pd.read_pickle('{}/{}.pkl'.format(self.resized_file_path,self.dataframe_name))
+        # check if dataframe exists, if not, create new dataframe
+        if os.path.isfile('data/resized.pkl'):
+            # read and save old df
+            old_df = pd.read_pickle('data/resized.pkl')
+            old_df.to_pickle('data/backup_old_{}_resized.pkl'.format(time.ctime().lower().replace(' ','_')))
+            # create and back up new df
+            self.df = pd.DataFrame(labeled_pics,columns=['filename', 'np_array'])
+            self.df.to_pickle('data/backup_new_{}_resized.pkl'.format(time.ctime().lower().replace(' ','_')))
+            # combine two dfs
             new_df = old_df.append(self.df)
             new_df.reset_index(inplace=True,drop=True)
-            new_df.to_pickle('{}/{}.pkl'.format(self.resized_file_path,self.dataframe_name))
+            # overwrite old instance of resized.pkl
+            new_df.to_pickle('data/resized.pkl')
         else:
-            self.df = pd.DataFrame(data,columns=['filename', 'np_array'])
-            self.df.to_pickle('{}/{}.pkl'.format(self.resized_file_path,self.dataframe_name))
+            # create new df and save as pickle
+            self.df = pd.DataFrame(labeled_pics,columns=['filename', 'np_array'])
+            self.df.to_pickle('data/resized.pkl')
 
     ''' --------------- END HIDDEN METHODS --------------- '''
 

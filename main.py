@@ -87,8 +87,7 @@ if __name__ == '__main__':
     # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/Pics/brewerytown/00_random',
             #    file_path_of_labeled='/Users/benjaminreverett/Desktop/Pics/00_labeled')
     # resize_label_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/Pics/00_labeled',
-                        # filepath_store_resized='/Users/benjaminreverett/Desktop/Pics/00_resized',
-                        # dataframe_name='dataframe',
+                        # filepath_store_resized='resized',
                         # num_pixels=50,
                         # show_resized_pic=False
                         # )

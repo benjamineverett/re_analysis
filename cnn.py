@@ -201,4 +201,4 @@ class NeuralNetwork(object):
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
         print('Total time to run: {}'.format(int(end_time/60)))
-        model.save('tests/{}_{}'.format(round(score[1],4),day))
+        model.save('models/{}_{}'.format(round(score[1],4),day))
