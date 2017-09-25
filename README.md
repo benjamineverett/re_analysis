@@ -1,4 +1,4 @@
-#Curb Appeal
+# Curb Appeal
 
 In a past life I was a real estate broker. As a broker, I always noticed that real estate price prediction algorithms didn't seem to adequately account for the things that most affected my clients’ purchasing behavior. My clients would spend much of their time discussing the number of trees on a block, the trash on the street, the number of abandoned houses on a block, and the construction on a block. Real estate algorithms seem to analyze price/sq.ft, adjacency to a school or crime in a neighborhood. All good factors to consider, but not the gritty, on the ground analysis my clients need. Especially in redeveloping neighborhoods in old cities, young buyers, are looking to purchase potential.
 
