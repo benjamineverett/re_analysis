@@ -173,12 +173,12 @@ class NeuralNetwork(object):
 
         ''' -- Layer 3 -- '''
         model.add(MaxPooling2D(pool_size=self.pool_size))
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.25))
         # transition to an mlp
         model.add(Flatten())
-        model.add(Dense(50000))
+        model.add(Dense(10))
         model.add(Activation('tanh'))
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.25))
         model.add(Dense(self.nb_classes))
         ''' -- Layer 4 -- '''
         model.add(Activation('softmax'))

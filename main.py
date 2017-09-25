@@ -64,9 +64,9 @@ def run_NN():
                                         y_col_name='label',
                                         train_split=0.75)
     instantiated_class.set_parameters(random_seed=1337,
-                                        batch_size=200,
+                                        batch_size=100,
                                         classes=10,
-                                        epochs=500,
+                                        epochs=10,
                                         image_dims=(100,50),
                                         num_filters=10,
                                         pool = (3, 3),
@@ -83,9 +83,9 @@ if __name__ == '__main__':
     # get_them_pics('brewerytown',19121)
     # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/Pics/brewerytown/00_random',
             #    file_path_of_labeled='/Users/benjaminreverett/Desktop/Pics/00_labeled')
-    resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/Pics/00_labeled',
-                        filepath_store_resized='resized',
-                        num_pixels=50,
-                        show_resized_pic=False
-                        )
-    # run_NN()
+    # resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/Pics/00_labeled',
+    #                     filepath_store_resized='resized',
+    #                     num_pixels=50,
+    #                     show_resized_pic=False
+    #                     )
+    run_NN()
