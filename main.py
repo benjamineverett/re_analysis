@@ -58,13 +58,13 @@ def run_NN():
     instantiated_class = NeuralNetwork()
     instantiated_class.import_data(label_file_path='data/labeled.pkl',
                                     array_file_path='data/resized.pkl',
-                                    merge_on='filename',)
+                                    merge_on='filename')
 
     instantiated_class.train_test_split(X_col_name='np_array',
                                         y_col_name='label',
                                         train_split=0.75)
     instantiated_class.set_parameters(random_seed=1337,
-                                        batch_size=100,
+                                        batch_size=10,
                                         classes=10,
                                         epochs=10,
                                         image_dims=(100,50),

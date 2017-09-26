@@ -171,26 +171,30 @@ class NeuralNetwork(object):
         model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
         model.add(Activation('tanh'))
 
+        model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
+        model.add(Activation('tanh'))
+
+
         ''' -- Layer 3 -- '''
         model.add(MaxPooling2D(pool_size=self.pool_size))
         model.add(Dropout(0.25))
         # transition to an mlp
         model.add(Flatten())
-        model.add(Dense(10))
+        model.add(Dense(50))
         model.add(Activation('tanh'))
         model.add(Dropout(0.25))
         model.add(Dense(self.nb_classes))
         ''' -- Layer 4 -- '''
         model.add(Activation('softmax'))
-
+        #compile(self, optimizer, loss, metrics=None, sample_weight_mode=None, weighted_metrics=None)
         model.compile(loss='categorical_crossentropy',
                       optimizer='adam',
                       metrics=['accuracy'])
+
         tbCallBack = TensorBoard(log_dir='./graph',
                                 histogram_freq=None,
                                 write_graph=True,
                                 write_images=True,
-                                write_grads=True,
                                 embeddings_metadata=True)
 
         model.fit(X_train, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
@@ -202,3 +206,22 @@ class NeuralNetwork(object):
         print('Test accuracy:', score[1])
         print('Total time to run: {}'.format(int(end_time/60)))
         model.save('models/{}_{}'.format(round(score[1],4),day))
+if __name__ == '__main__':
+    instantiated_class = NeuralNetwork()
+    instantiated_class.import_data(label_file_path='data/labeled.pkl',
+                                    array_file_path='data/resized.pkl',
+                                    merge_on='filename')
+
+    instantiated_class.train_test_split(X_col_name='np_array',
+                                        y_col_name='label',
+                                        train_split=0.80)
+    instantiated_class.set_parameters(random_seed=1337,
+                                        batch_size=10,
+                                        classes=10,
+                                        epochs=20,
+                                        image_dims=(100,50),
+                                        num_filters=3,
+                                        pool = (2, 2),
+                                        kern_size = (2, 2),
+                                        colors=3)
+    instantiated_class.run_models()
