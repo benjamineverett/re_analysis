@@ -13,7 +13,7 @@ Fundamentally, real estate is local and grounded in the physical space directly 
 
 Curb Appeal is my attempt to try to capture a small piece of the on-the ground factors affectings real estate prices.
 
-1 - Using a **convolutional neural network**, build an algorithm to **count** the **number of trees on a block***
+1 - Using a **convolutional neural network**, build an algorithm to **count** the **number of trees on a block**
 
 2 - Using a simple **linear regression model**, predict real estate prices with publicly available real estate data
 
@@ -21,27 +21,26 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 
 ## Table of Contents
 
-1. [Dataset](#dataset)
+1. [Dataset: Collection, Preprocessing and Creation](#dataset_collection_preprocessing)
+	
+	* [Fetch](#fetch)
+	* [Label](#label)
+	* [Resize](#resize)
+	* [Feed](#feed)
 
-2. [Preprocessing](#preprocessing)
-3. [Convolutional Neural Network](#convolutional-neural-network)
-
-	* [Model Architecture](#model-architecture)
-	* [Model Training](#model-training)
-	* [Results](#results)
-4. [Real Estate Analysis - Minus Trees](#real-estate-analysis)
-
-	* [Model Architecture](#model-architecture)
-	* [Model Training](#model-training)
-	* [Results](#results)
-5. [All together now](#all-together-now)
+2. [Real Estate Analysis - Minus Trees](#real-estate-analysis)
 
 	* [Model Architecture](#model-architecture)
 	* [Model Training](#model-training)
 	* [Results](#results)
+3. [All together now](#all-together-now)
+
+	* [Model Architecture](#model-architecture)
+	* [Model Training](#model-training)
+	* [Results](#results)
 
 
-## Dataset, Collection and Preprocessing
+## Dataset: Collection, Preprocessing and Creation
 
 My pipeline moves in the following fashion:
 
@@ -51,24 +50,48 @@ My pipeline moves in the following fashion:
 
 I wrote [fetch_images.py](fetch_images.py) to utilize [Google Street View (GSV) API](https://developers.google.com/maps/documentation/streetview/) and [GSV meta data API](https://developers.google.com/maps/documentation/streetview/metadata) to perform operations in the following manner.
 
-1. Given a street name and a block range, (e.g. 'N 26th st', 1300-1500 blocks) my script will calibrate its heading, then set the camera to take pictures at a 90 degree angle on each side of the car.
+1. Given a street name and a block range, (e.g. 'N 26th st', 1300-1500 blocks) my script will calibrate its heading, then set the camera to take pictures at a 90 degree angle on each side of the car. The heading resets at the beginnin of every block
 
 2. Each picture is checked against the last picture to make sure it is not a repeat.
 
-3. Each picture is saved as house number, street name, city, state and zip. E.g. '1338_n_26th_st_philadelphia_pa_19121.jpg'
+3. Each original picture is saved as house number, street name, city, state and zip. E.g. '1338_n_26th_st_philadelphia_pa_19121.jpg'
 
 4. At the end of each series of fetches, the script will write to a pandas dataframe the time, date, and number of fetches and report this back to the user(GSV will allow 25,000 free images a day)
 
 #### Label 
-After fetching, the process moves through [label_pics.py](label_pics.py). Label pics heavily utilizes [OpenCV](http://opencv.org/). The OpenCV build [is specific](https://github.com/opencv/opencv_contrib) and can be installed via 'pip install opencv-contrib-python'. Labeling happens in the following manner.
+After fetching, the process moves through [label_pics.py](label_pics.py). Label pics heavily utilizes [OpenCV](http://opencv.org/). The OpenCV build [is specific](https://github.com/opencv/opencv_contrib) and can be installed via 'pip install opencv-contrib-python'.
+
+One of the challenges of labeling is to decide what is a tree and what is not.
+
+I decided that since I am measuring curb appeal I want to count trees that are a part of the sidewalk archicture, not trees visible in the background. As such, I only counted trees which were approximately straight on in my photos, a part of the sidewalk, and had a part of their trunk visible.
+
+Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree. See examples below:
+
+<img alt="No Tree" src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+
+<img alt="No Tree, not a part of sidewalk" src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+
+<img alt="No Tree, intersection" src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
+
+The process of labeling happens in the following manner:
 
 1. Folder of pics to label is specified.
 
 2. The labeler splits the photo in half and displays each image for labeling.
 
-3. The users pushes specified key for 'yes tree' or 'no tree'.
+<img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250>
 
-4. The labeler than mirrors the photo with user assigned label and saves.
+3. I 'yes tree' or 'no tree' for each split image.
+
+<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+
+<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+
+4. The labeler than mirrors the photo with my assigned label and saves.
+
+<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
+
+<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
 
 5. E.g. image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored
 
@@ -92,7 +115,7 @@ After labeling, the pictures are resized. Again, using OpenCV in the following m
 
 4. When reading an image, OpenCV converts it to a [numpy array](http://www.numpy.org/). This array along with the filename is saved to a pandas dataframe.
 
-#### Convolutional Neural Network (CNN)
+#### Feed - Convolutional Neural Network (CNN)
 
 I now have two separate dataframes, one containing filename and labels, and another containing filename and numpy arrays. I perform the following operations in [cnn.py](cnn.py)
 
@@ -109,74 +132,6 @@ I now have two separate dataframes, one containing filename and labels, and anot
 6. If the accuracy of the model beats previous model accuracy's, then model is saved to used for the prediction stage.
 
 I obtained the public property data set from [Open Data Philly](https://www.opendataphilly.org/dataset/opa-property-assessments)
-
-## Preprocessing
-
-
-### Collection:
-
-
-I wrote my GSV class to perform following operations:
-
-	Go to a specified block
-
-	At the beginning of each block, check the direction of the block
-
-	Based upon the direction of the block set the heading for the camera
-
-	Fetch all picture on the even side of the block orthogonal to the heading
-
-	Fetch all pictures on the odd side of the block orthogonal to the heading
-
-	Check each fetched pictures against existing pictures
-
-	Save the fetched picture if it is original
-
-	Save the fetched picture in the form:
-
-		'street number_street direction_street name_city_state_zip'
-
-		'1245_n_25th_st_philadelphia_pa_19121'
-
-
-### Labeling:
-
-One of the challenges of labeling is to decide what is a tree and what is not.
-
-I decided that since I am measuring curb appeal I want to count trees that are a part of the sidewalk archicture, not trees visible in the background. As such, I only counted trees which were approximately straight on in my photos, a part of the sidewalk, and had a part of their trunk visible.
-
-Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree. See examples below:
-
-Each of these split pictures I then mirrored. Thus, from one GSV picture I was able to obtain 4 labeled images.
-
-<img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250>
-
-I took each picture obtained from GSV, split it in half and labeled it 'tree' or 'no tree'.
-
-<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
-
-<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
-
-<img alt="No Tree, not a part of sidewalk" src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
-
-<img alt="No Tree, intersection" src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
-
-<img alt="No Tree" src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
-
-### Scaling
-
-After labeling, using [OpenCV](http://opencv.org/) I resized the images to 100x50 pixels
-
-### Bookkeeping
-
-Using [pandas](https://pypi.python.org/pypi/pandas/) I saved a data frame of all labeled pics
-
-<img alt="Labels" src="images/labels.png" width=250>
-
-And all resized pictures as numpy arrays
-
-<img alt="Resized Pics" src="images/images.png" width=250>
-
 
 ### Real Estate Data
 
