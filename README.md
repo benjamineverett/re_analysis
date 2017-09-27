@@ -109,18 +109,20 @@ The process of labeling happens in the following manner:
 </p>
 
 4. The labeler than mirrors the photo with my assigned label and saves.
+
 <p align=“center”>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
 </p>
-5. E.g. image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored
+
+5. Review: original image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored -> repeat for image2
 
 	from original image 4 images saved in following manner:
 	
-	image1
-	image1_flip
-	image2
-	image2_flip
+	address_image1
+	address_image1_flip
+	address_image2
+	address_image2_flip
 	
 6. Every 100 pics, the labeler script will save the filename and label to a pandas dataframe as well as saving a backup.
 
@@ -141,21 +143,19 @@ I now have two separate dataframes, one containing filename and labels, and anot
 
 1. Each datafame is loaded
 
-2. The dataframes are joined on filename
+2. The dataframes are joined on 'filename'
 
-3. I now have one dataframe containing filename, label, and numpy array
+3. I now have one dataframe containing 'filename', 'label', and 'np_array'
 
 4. The arrays and labels are formated in the correct manner to feed into [Keras](https://keras.io/)
 
 5. The information passes through the CNN and I am able to see the accuracy of the model predictions.
 
-6. If the accuracy of the model beats previous model accuracy's, then model is saved to used for the prediction stage.
-
-I obtained the public property data set from [Open Data Philly](https://www.opendataphilly.org/dataset/opa-property-assessments)
+6. If the accuracy of the model beats previous model accuracies, then the model is saved to used for the prediction stage.
 
 ### Real Estate Data
 
-........?????..........
+I obtained the public property data set from [Open Data Philly](https://www.opendataphilly.org/dataset/opa-property-assessments)
 
 ## Convolutional Neural Network
 
@@ -175,6 +175,3 @@ I obtained the public property data set from [Open Data Philly](https://www.open
 
 ## All together now
 
-
-
-## Edited out:
