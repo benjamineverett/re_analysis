@@ -27,6 +27,7 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 	* [Label](#label)
 	* [Resize](#resize)
 	* [Feed Network](#feed-network)
+	* [Real Estate Data](#real-estate-data)
 
 2. [Real Estate Analysis - Minus Trees](#real-estate-analysis)
 
@@ -153,9 +154,11 @@ I now have two separate dataframes, one containing filename and labels, and anot
 
 6. If the accuracy of the model beats previous model accuracies, then the model is saved to used for the prediction stage.
 
-### Real Estate Data
+#### Real Estate Data
 
 I obtained the public property data set from [Open Data Philly](https://www.opendataphilly.org/dataset/opa-property-assessments)
+
+I performed the following operations on the data set using [re_data.py](re_data.py)
 
 ## Convolutional Neural Network
 
