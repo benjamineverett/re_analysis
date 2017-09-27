@@ -18,8 +18,7 @@ def get_them_pics(neighborhood,zip_code):
     from fetch_images import FetchImages
     # instaniate FetchImages class
     instantiated_class = FetchImages(which_API='GSV',
-                                        # save_to='/Users/benjaminreverett/Desktop/Pics/{}'.format(neighborhood),
-                                        save_to='pennsport')
+                                    save_to='pics/{}'.format(neighborhood))
     streets, directions = get_neighborhood_streets(neighborhood)
     # get n_s, e_w
     for direction in directions:
@@ -93,8 +92,10 @@ def run_NN():
 
 if __name__ == '__main__':
 
-    get_them_pics('pennsport',19147)
-    get_them_pics('pennsport',19148)
+    get_them_pics('fairmount',19130)
+    get_them_pics('brewerytown',19121)
+    # get_them_pics('pennsport',19148)
+    # get_them_pics('pennsport',19147)
     # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/test',
     #            file_path_of_labeled='/Users/benjaminreverett/Desktop/test/labeled')
     # resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/test/labeled',
