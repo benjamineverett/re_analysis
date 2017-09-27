@@ -103,10 +103,16 @@ The process of labeling happens in the following manner:
 </p>
 
 3. I then label as 'yes tree' or 'no tree' for each split image.
+
+
 <p align=“center”>
  <sub> <b> 'yes tree' and 'no tree' </b> </sub>	
- <img alt="yes_tree" hspace=“25” src="images/yes_tree" width=250>
- <img alt="no_tree" hspace=“25” src="images/no_tree" width=250>
+</p>
+
+
+<p align=“center”>
+ <img alt="yes_tree" hspace=“25” src="images/yes_tree.jpeg" width=250>
+ <img alt="no_tree" hspace=“25” src="images/no_tree.jpeg" width=250>
 </p>
 
 4. The labeler than mirrors the photo with my assigned label and saves.
