@@ -69,12 +69,18 @@ I decided that since I am measuring curb appeal I want to count trees that are a
 
 Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree. See examples below:
 
-<p align=“center”>
-  <src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
-  
-  <src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+From left to right, labeled: 
+	
+no tree
+	
+no tree because trees are not a part of sidewalk architecture
+	
+no tree because trees are down the block and not a part of the block orthogonally adjacent to the camera
 
-  <src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
+<p align=“center”>
+ <img alt="No tree" hspace=“25” src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+ <img alt="No tree" hspace=“25” src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+ <img alt="No tree" hspace=“25” src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
 </p>
 
 
