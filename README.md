@@ -26,7 +26,7 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 	* [Fetch](#fetch)
 	* [Label](#label)
 	* [Resize](#resize)
-	* [Feed](#feed_-_convolutional_neural_network_(CNN))
+	* [Feed](#feed_convolutional_neural_network_(CNN))
 
 2. [Real Estate Analysis - Minus Trees](#real-estate-analysis)
 
