@@ -43,8 +43,6 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 
 ## Dataset: Collection, Preprocessing and Creation
 
-### 
-
 My pipeline moves in the following fashion:
 
 	Fetch -> Label -> Resize -> Feed to Convoluted Network
@@ -70,13 +68,13 @@ I decided that since I am measuring curb appeal I want to count trees that are a
 
 Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree.
 
-See examples below, labeld from left to right: 
+See examples below, labeled from left to right: 
 	
 **'no tree'**
 	
-**'no tree'** because trees are not a part of sidewalk architecture
+**'no tree'** Trees that are not a part of sidewalk architecture do not count in this model.
 	
-**'no tree** because trees are down the block and not a part of the block orthogonally adjacent to the camera
+**'no tree** Trees that are down the block and not a part of parrellel running sidewalk do not count in this model
 
 <p align=“center”>
  <img alt="No tree" hspace=“25” src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
@@ -91,12 +89,12 @@ The process of labeling happens in the following manner:
 
 2. The labeler splits the photo in half and displays each image for labeling.
 
-
+**original pic**
 <p align=“center”>
  <img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250> 
 </p>
 
-	
+**original pic split**	
 <p align=“center”>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
@@ -116,19 +114,21 @@ The process of labeling happens in the following manner:
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
 </p>
 
-5. Review: original image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored -> repeat for image2
+5. Review: 
+
+	original image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored -> repeat for image2
 
 	from original image 4 images saved in following manner:
-	
+
 	address_image1
 	address_image1_flip
 	address_image2
 	address_image2_flip
 	
-6. Every 100 pics, the labeler script will save the filename and label to a pandas dataframe as well as saving a backup.
+6. Every 100 pics, the labeler script will save the filename and label to a pandas dataframe as well as saving a backup of the dataframe.
 
 #### Resize
-After labeling, the pictures are resized. Again, using OpenCV in the following manner.
+After labeling, the pictures are resized. Again, using OpenCV and performed in the following manner.
 
 1. Folder of labeled pics is specified.
 
