@@ -14,7 +14,7 @@ import time
 import pandas as pd
 import cv2
 import numpy as np
-from math import radians
+import math
 
 class FetchImages(object):
 
@@ -89,10 +89,14 @@ class FetchImages(object):
 
         self.zip_code = zip_code
         self.street_name = street_name.lower()
-        self.house_nums = range(blk_st,blk_end)
+        self.house_nums = (blk_st,blk_end)
         self.city = city.lower()
         self.state = state.lower()
-        self._create_addresses()
+        self.blocks = self._set_blocks()
+        self.street_city_state_zip = '{} {} {} {}'.format(self.street_name,
+                                                        self.city,
+                                                        self.state,
+                                                        self.zip_code)
 
 
     def set_payload(self,
@@ -139,7 +143,7 @@ class FetchImages(object):
           'fov': fov,
           'key': API_key}
 
-    def fetch_pictures(self,even_heading=90,odd_heading=270,print_num_fetches=True):
+    def fetch_pictures(self,even_heading,print_num_fetches=True):
         '''
         -- Fetch pictures --
 
@@ -164,47 +168,60 @@ class FetchImages(object):
 
         # set self.directory, function creates if it does not exist
         self._create_save_to_directory()
-        # set initial heading
-        heading = even_heading
         # start counter for _fetches_for_day
         counter = 0
         # begin time for _info_for_day
         overall_start = time.time()
         # pull even or odd numbered streets, starts with even
-        for even_or_odd_block in self.streets:
-            # pull addresses from even or odd block
-            for address in even_or_odd_block:
-                street_num = int(address[:4].replace(' ',''))
-                if street_num % 100 == 0:
-                    length = len(str(street_num)))
-                    start_address = address
-                    end_address = address.replace(address[:length], street_num+100)
-                    bearing = self._get_heading(blk_st=start_address,blk_end=end_address)
+        for block in self.blocks.keys():
+            start = '{} {}'.format(block, self.street_city_state_zip)
+            end = '{} {}'.format(block+100, self.street_city_state_zip)
+            self.heading = self._get_heading(blk_st=start,blk_end=end)
 
+            for even_or_odd_block in self.blocks[block].keys():
+                self.bearing = self._get_bearing(heading=self.heading,
+                                            side_of_st=even_heading,
+                                            blk=even_or_odd_block)
 
-
-                start = time.time()
-                print('Fetching {}'.format(address))
-                # set params for this picture fetch
-                self.set_payload(address=address,heading=heading,API_key=self.API)
-                # get picture object from google
-                self._fetch_picture()
-                # save picture object
-                self._save_pic(address)
-                counter += 1
-                # display time to fetch picture
-                print('Time to fetch: {}\n'.format(time.time() - start))
-            # switch heading to odd heading
-            heading = odd_heading
+                for house_num in self.blocks[block][even_or_odd_block]:
+                    address = '{} {}'.format(house_num, self.street_city_state_zip)
+                    start = time.time()
+                    print('Fetching {}'.format(address))
+                    # set params for this picture fetch
+                    self.set_payload(address=address,heading=self.bearing,API_key=self.API)
+                    # get picture object from google
+                    self._fetch_picture()
+                    # save picture object
+                    self._save_pic(address)
+                    counter += 1
+                    # display time to fetch picture
+                    print('Time to fetch: {}\n'.format(time.time() - start))
         # print helpful info
         self._info_for_day(num_fetches=counter,overall_start_time=overall_start)
 
+    def _get_bearing(self,heading,side_of_st,blk):
+        if side_of_st == 'right':
+            even_pic = (heading + 90) % 360
+            odd_pic = (heading + 270) % 360
+        elif side_of_st == 'left':
+            even_pic = (heading + 270) % 360
+            odd_pic = (heading + 90) % 360
+        else:
+            return 'You need to specify "right" or "left" for the variable "even_heading"'
+        if blk == 'even':
+            return even_pic
+        elif blk == 'odd':
+            return odd_pic
+        else:
+            return 'I need a bearing'
+
     def _get_heading(self,blk_st,blk_end):
-        response = self._get_meta_data(address)
-        lat_start = math.radians(response.json()['location']['lat'])
-        lng_start = math.radians(response.json()['location']['lng'])
-        lat_end = math.radians(response.json()['location']['lat'])
-        lng_end = math.radians(response.json()['location']['lng'])
+        block_start = self._get_meta_data(blk_st)
+        block_end = self._get_meta_data(blk_end)
+        lat_start = math.radians(block_start.json()['location']['lat'])
+        lng_start = math.radians(block_start.json()['location']['lng'])
+        lat_end = math.radians(block_end.json()['location']['lat'])
+        lng_end = math.radians(block_end.json()['location']['lng'])
 
         dLong = lng_end - lng_start
 
@@ -220,7 +237,7 @@ class FetchImages(object):
         return bearing
 
     def _get_meta_data(self,address):
-        link = 'https://maps.googleapis.com/maps/api/streetview/metadata?parameters
+        link = 'https://maps.googleapis.com/maps/api/streetview/metadata?parameters'
         payload = {'location':address,
                     'key':self.API}
         return requests.get(link,params=payload)
@@ -279,33 +296,23 @@ class FetchImages(object):
             # return message and break loop if API not found
             return "I don't have that API"
 
-    def _create_addresses(self):
-        '''
-        -- Initializes lists of addresses --
-            Called in fit_info function
+    def _set_blocks(self):
+        blocks = {}
 
-            PARAMETERS
-            -----------
-                None
+        if self.house_nums[0] > 99:
+            remainder = self.house_nums[0] % 100
+            block = self.house_nums[0] - remainder
 
-            INITIALIZED
-            -----------
-                self.streets:
-                    Tuple of lists of streets sorted into odd and even house numbers
-                    -> ([odd house numbers],[even street numbers])
+        elif self.house_nums[0] < 100:
+            block = 0
 
-            RETURNS
-            -------
-                None
-        '''
+        while block < self.house_nums[-1]:
+            # blocks[block] = list(range(block, block + 100))
+            blocks[block] = {'even': [x for x in list(range(block, block + 100)) if x % 2 == 0]}
+            blocks[block].update({'odd': [x for x in list(range(block, block + 100)) if x % 2 != 0]})
+            block += 100
 
-        # create variable to make easier to read in next function
-        city_state_zip = "{} {} {}".format(self.city,self.state,self.zip_code)
-        # create even and odd streets
-        even_street = ['{} {} {}'.format(house_num,self.street_name,city_state_zip) for house_num in self.house_nums if house_num % 2 == 0]
-        odd_street = ['{} {} {}'.format(house_num,self.street_name,city_state_zip) for house_num in self.house_nums if house_num % 2 == 1]
-        # initialize tuple of lists of streets
-        self.streets = even_street,odd_street
+        return blocks
 
     def _fetch_picture(self):
         '''

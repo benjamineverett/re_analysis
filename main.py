@@ -5,7 +5,7 @@
 def get_neighborhood_dict():
     # get dict containing: {neighborhood:{st_direction:{st_name, (block start, block end)}}}
     #                      {'fairmount':{'n_s': {'n 22nd st', (800,000)}},'brewerytown'..........}}}
-    with open('/Users/benjaminreverett/Desktop/philadelphia_streets_by_neighborhood.txt','r') as f:
+    with open('data/philadelphia_streets_by_neighborhood.txt','r') as f:
         return eval(f.read())
 
 def get_neighborhood_streets(neighborhood):
@@ -17,7 +17,9 @@ def get_neighborhood_streets(neighborhood):
 def get_them_pics(neighborhood,zip_code):
     from fetch_images import FetchImages
     # instaniate FetchImages class
-    instantiated_class = FetchImages(which_API='GSV',save_to='/Users/benjaminreverett/Desktop/Pics/{}'.format(neighborhood))
+    instantiated_class = FetchImages(which_API='GSV',
+                                        # save_to='/Users/benjaminreverett/Desktop/Pics/{}'.format(neighborhood),
+                                        save_to='pennsport')
     streets, directions = get_neighborhood_streets(neighborhood)
     # get n_s, e_w
     for direction in directions:
@@ -26,12 +28,23 @@ def get_them_pics(neighborhood,zip_code):
             # get block start and block end for neighborhood
             blk_st, blk_end = streets[direction][street]
             # fit info to class
-            instantiated_class.fit_info(street,zip_code,blk_st,blk_end)
+            instantiated_class.fit_info(street_name=street,
+                                        zip_code=zip_code,
+                                        blk_st=blk_st,
+                                        blk_end=blk_end)
             # set heading for picture to be taken and fetch pic
+            # either right or left
             if direction == 'n_s':
-                instantiated_class.fetch_pictures(even_heading=270,odd_heading=90)
+                instantiated_class.fetch_pictures(even_heading='left')
             if direction == 'e_w':
-                instantiated_class.fetch_pictures(even_heading=180,odd_heading=0)
+                instantiated_class.fetch_pictures(even_heading='left')
+
+def test_pics_for_small_sample(street_name,zip_code,blk_st,blk_end,even_heading):
+    from fetch_images import FetchImages
+    instantiated_class = FetchImages(which_API='GSV',save_to='/Users/benjaminreverett/Desktop/test')
+    instantiated_class.fit_info(street_name,zip_code,blk_st,blk_end)
+    instantiated_class.fetch_pictures(even_heading)
+
 
 ''' -----------------  Code for LABELING pics  ----------------- '''
 
@@ -80,12 +93,18 @@ def run_NN():
 
 if __name__ == '__main__':
 
-    # get_them_pics('brewerytown',19121)
-    # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/Pics/brewerytown/00_random',
-            #    file_path_of_labeled='/Users/benjaminreverett/Desktop/Pics/00_labeled')
-    # resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/Pics/00_labeled',
-    #                     filepath_store_resized='resized',
+    get_them_pics('pennsport',19147)
+    get_them_pics('pennsport',19148)
+    # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/test',
+    #            file_path_of_labeled='/Users/benjaminreverett/Desktop/test/labeled')
+    # resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/test/labeled',
+    #                     filepath_store_resized='/Users/benjaminreverett/Desktop/test/resized',
     #                     num_pixels=50,
     #                     show_resized_pic=False
     #                     )
-    run_NN()
+    # run_NN()
+    # test_pics_for_small_sample(street_name='fairmount ave',
+    #                             zip_code = 19130,
+    #                             blk_st=1800,
+    #                             blk_end=2300,
+    #                             even_heading='left')

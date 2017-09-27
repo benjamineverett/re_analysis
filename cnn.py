@@ -51,6 +51,9 @@ class NeuralNetwork(object):
         # pull data from arrays
         df_arrays = pd.read_pickle(array_file_path)
         df_labels = pd.read_pickle(label_file_path)
+        self.df_test_pics = pd.read_pickle('test.pkl')
+        self.test_array = self.df_test_pics['np_array']
+        self.test_array = np.array(list(self.test_array.values))
         # merge df_arrays via left merge on merge_on
         self.df = df_arrays.merge(df_labels,how='left',on=[merge_on])
 
@@ -96,6 +99,7 @@ class NeuralNetwork(object):
         self.X_test = X[msk]
         self.y_train = y[~msk]
         self.y_test = y[msk]
+
 
     def set_parameters(self,
                         random_seed,
@@ -153,41 +157,43 @@ class NeuralNetwork(object):
         # get data into correct format
         X_train = self.X_train.astype('float32')
         X_test = self.X_test.astype('float32')
+        self.test_array = self.test_array.astype('float32')
         # normalize
         X_train /= 255
         X_test /= 255
+        self.test_array /= 255
         # convert class vectors to binary class matrices
         Y_train = np_utils.to_categorical(self.y_train, self.nb_classes)
         Y_test = np_utils.to_categorical(self.y_test, self.nb_classes)
         # set model
-        model = Sequential()
+        self.model = Sequential()
         # 2 convolutional layers followed by a pooling layer followed by dropout
         ''' -- Layer 1 -- '''
-        model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
+        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
                                 border_mode='valid',
                                 input_shape=self.input_shape))
-        model.add(Activation('tanh'))
+        self.model.add(Activation('tanh'))
         ''' -- Layer 2 -- '''
-        model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
-        model.add(Activation('tanh'))
+        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
+        self.model.add(Activation('tanh'))
 
-        model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
-        model.add(Activation('tanh'))
+        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
+        self.model.add(Activation('tanh'))
 
 
         ''' -- Layer 3 -- '''
-        model.add(MaxPooling2D(pool_size=self.pool_size))
-        model.add(Dropout(0.25))
+        self.model.add(MaxPooling2D(pool_size=self.pool_size))
+        self.model.add(Dropout(0.25))
         # transition to an mlp
-        model.add(Flatten())
-        model.add(Dense(50))
-        model.add(Activation('tanh'))
-        model.add(Dropout(0.25))
-        model.add(Dense(self.nb_classes))
+        self.model.add(Flatten())
+        self.model.add(Dense(50))
+        self.model.add(Activation('tanh'))
+        self.model.add(Dropout(0.25))
+        self.model.add(Dense(self.nb_classes))
         ''' -- Layer 4 -- '''
-        model.add(Activation('softmax'))
+        self.model.add(Activation('softmax'))
         #compile(self, optimizer, loss, metrics=None, sample_weight_mode=None, weighted_metrics=None)
-        model.compile(loss='categorical_crossentropy',
+        self.model.compile(loss='categorical_crossentropy',
                       optimizer='adam',
                       metrics=['accuracy'])
 
@@ -197,31 +203,31 @@ class NeuralNetwork(object):
                                 write_images=True,
                                 embeddings_metadata=True)
 
-        model.fit(X_train, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
+        self.model.fit(X_train, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
                   verbose=1, validation_data=(X_test, Y_test),callbacks=[tbCallBack])
-        score = model.evaluate(X_test, Y_test, verbose=0)
+        score = self.model.evaluate(X_test, Y_test, verbose=0)
         end_time = time.time()-start
         day = time.ctime().lower().replace(' ','_')
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
         print('Total time to run: {}'.format(int(end_time/60)))
-        model.save('models/{}_{}'.format(round(score[1],4),day))
+        self.model.save('models/{}_{}'.format(round(score[1],4),day))
 if __name__ == '__main__':
-    instantiated_class = NeuralNetwork()
-    instantiated_class.import_data(label_file_path='data/labeled.pkl',
+    NN = NeuralNetwork()
+    NN.import_data(label_file_path='data/labeled.pkl',
                                     array_file_path='data/resized.pkl',
                                     merge_on='filename')
 
-    instantiated_class.train_test_split(X_col_name='np_array',
+    NN.train_test_split(X_col_name='np_array',
                                         y_col_name='label',
                                         train_split=0.80)
-    instantiated_class.set_parameters(random_seed=1337,
+    NN.set_parameters(random_seed=1337,
                                         batch_size=10,
                                         classes=10,
-                                        epochs=20,
+                                        epochs=1,
                                         image_dims=(100,50),
                                         num_filters=3,
                                         pool = (2, 2),
                                         kern_size = (2, 2),
                                         colors=3)
-    instantiated_class.run_models()
+    NN.run_models()
