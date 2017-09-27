@@ -92,23 +92,16 @@ The process of labeling happens in the following manner:
 
 
 <p align=“center”>
- <sub> <b> Original Picture: </b> </sub>
  <img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250> 
 </p>
 
+	
 <p align=“center”>
- <sub> <b> Original Picture Split into Two: </b> </sub>	
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
 </p>
 
 3. I then label as 'yes tree' or 'no tree' for each split image.
-
-
-<p align=“center”>
- <sub> <b> 'yes tree' and 'no tree' </b> </sub>	
-</p>
-
 
 <p align=“center”>
  <img alt="yes_tree" hspace=“25” src="images/yes_tree.jpeg" width=250>
@@ -117,7 +110,6 @@ The process of labeling happens in the following manner:
 
 4. The labeler than mirrors the photo with my assigned label and saves.
 <p align=“center”>
- <sub> <b> Split image and Flipped image </b> </sub>	
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
 </p>
