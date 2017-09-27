@@ -67,15 +67,15 @@ One of the challenges of labeling is to decide what is a tree and what is not.
 
 I decided that since I am measuring curb appeal I want to count trees that are a part of the sidewalk archicture, not trees visible in the background. As such, I only counted trees which were approximately straight on in my photos, a part of the sidewalk, and had a part of their trunk visible.
 
-Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree. See examples below:
+Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree.
 
-From left to right, labeled: 
+See examples below, labeld from left to right: 
 	
-no tree
+**'no tree'**
 	
-no tree because trees are not a part of sidewalk architecture
+**'no tree'** because trees are not a part of sidewalk architecture
 	
-no tree because trees are down the block and not a part of the block orthogonally adjacent to the camera
+**'no tree** because trees are down the block and not a part of the block orthogonally adjacent to the camera
 
 <p align=“center”>
  <img alt="No tree" hspace=“25” src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
@@ -90,20 +90,31 @@ The process of labeling happens in the following manner:
 
 2. The labeler splits the photo in half and displays each image for labeling.
 
-<img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250>
 
-3. I 'yes tree' or 'no tree' for each split image.
+<p align=“center”>
+ <sub> <b> Original Picture: </b> </sub>
+ <img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250> 
+</p>
 
-<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+<p align=“center”>
+ <sub> <b> Original Picture Split into Two: </b> </sub>	
+ <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+ <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+</p>
 
-<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+3. I then label as 'yes tree' or 'no tree' for each split image.
+<p align=“center”>
+ <sub> <b> 'yes tree' and 'no tree' </b> </sub>	
+ <img alt="yes_tree" hspace=“25” src="images/yes_tree" width=250>
+ <img alt="no_tree" hspace=“25” src="images/no_tree" width=250>
+</p>
 
 4. The labeler than mirrors the photo with my assigned label and saves.
-
-<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
-
-<img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
-
+<p align=“center”>
+ <sub> <b> Split image and Flipped image </b> </sub>	
+ <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+ <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
+</p>
 5. E.g. image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored
 
 	from original image 4 images saved in following manner:
