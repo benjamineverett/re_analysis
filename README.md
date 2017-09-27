@@ -26,7 +26,7 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 	* [Fetch](#fetch)
 	* [Label](#label)
 	* [Resize](#resize)
-	* [Feed](#feed_convolutional_neural_network_(CNN))
+	* [Feed Network](#feed_network)
 
 2. [Real Estate Analysis - Minus Trees](#real-estate-analysis)
 
@@ -137,7 +137,8 @@ After labeling, the pictures are resized. Again, using OpenCV in the following m
 
 4. When reading an image, OpenCV converts it to a [numpy array](http://www.numpy.org/). This array along with the filename is saved to a pandas dataframe.
 
-#### Feed - Convolutional Neural Network (CNN)
+#### Feed Network
+##### Convolutional Neural Network (CNN)
 
 I now have two separate dataframes, one containing filename and labels, and another containing filename and numpy arrays. I perform the following operations in [cnn.py](cnn.py)
 
