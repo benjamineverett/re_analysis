@@ -69,11 +69,14 @@ I decided that since I am measuring curb appeal I want to count trees that are a
 
 Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree. See examples below:
 
-<img alt="No Tree" src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+<p align=“center”>
+  <src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
+  
+  <src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
 
-<img alt="No Tree, not a part of sidewalk" src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
+  <src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
+</p>
 
-<img alt="No Tree, intersection" src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
 
 The process of labeling happens in the following manner:
 
