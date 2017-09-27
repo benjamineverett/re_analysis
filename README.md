@@ -21,7 +21,7 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 
 ## Table of Contents
 
-1. [Dataset - Collection, Preprocessing and Creation](#dataset_-_collection,_preprocessing_and_creation)
+1. [Dataset - Collection, Preprocessing and Creation](#dataset_-_collection_preprocessing_and_creation)
 	
 	* [Fetch](#fetch)
 	* [Label](#label)
@@ -40,7 +40,7 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 	* [Results](#results)
 
 
-## Dataset: Collection, Preprocessing and Creation
+## Dataset - Collection Preprocessing and Creation
 
 My pipeline moves in the following fashion:
 
