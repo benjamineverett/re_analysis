@@ -1,4 +1,4 @@
-## Intro
+## Introduction
 
 In a past life I was a real estate broker. As a broker, I noticed that real estate price prediction algorithms didn't seem to adequately account for the things that most affected my clients’ purchasing behavior. My clients would spend much of their time discussing the number of trees on a block, the trash on the street, the number of abandoned houses on a block, and the construction on a block. Real estate algorithms seemed to analyze price/sq.ft, adjacency to a school or crime in a neighborhood. All good factors to consider, but not the gritty, on the ground analysis my clients needed. Especially in redeveloping neighborhoods in old cities, young buyers, are looking to purchase potential.
 
@@ -6,6 +6,8 @@ In a past life I was a real estate broker. As a broker, I noticed that real esta
 I listened to a podcast about a year and a half ago regarding two data scientists that trained an algorithm to identify year, make and model of vehicles on the street via Google Street View. [They were able to use this information to very accurately predict election results](images/pnas.pdf).
 
 Fundamentally, real estate is local and grounded in the physical space directly viewable to the human eye. In Philadelphia, being a very provincal city, this is even more the case than many cities. Antedotally, I bought a house 4 blocks away from a friend. My house cost 5 times less. It is difficult for a 30,000 foot algorithm to take into account the small details of the literal, on the ground, built envirnoment that buyer's take into account when purchasing real estate.
+
+Many thanks to the excellent documentation provided by [Keras](https://keras.io/), the excellent OpenCV tutorials at [pyimagesearch](https://www.pyimagesearch.com/) and OF COURSE the [stackoverflow community](https://stackoverflow.com/).
 
 # Curb appeal
 
