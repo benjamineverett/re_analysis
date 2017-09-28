@@ -55,6 +55,11 @@ I wrote [fetch_images.py](fetch_images.py) to utilize [Google Street View (GSV) 
 
 1. Given a street name and a block range, (e.g. 'N 26th st', 1300-1500 blocks) my script will calibrate its heading, then set the camera to take pictures at a 90 degree angle on each side of the car. The heading resets at the beginnin of every block
 
+<p align=“center”>
+ <img alt="90 degrees" src="images/90_degreesjpeg" width=250>
+</p>
+
+
 2. Each picture is checked against the last picture to make sure it is not a repeat.
 
 3. Each original picture is saved as house number, street name, city, state and zip. E.g. '1338_n_26th_st_philadelphia_pa_19121.jpg'
