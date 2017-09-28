@@ -4,3 +4,4 @@ graph/
 git_ignore/
 resized/
 pics/
+*.csv

@@ -166,6 +166,8 @@ class FetchImages(object):
                 Saves pictures to specified directory
         '''
 
+        # create a list of blocks that do not have headings
+        self.no_headings = []
         # set self.directory, function creates if it does not exist
         self._create_save_to_directory()
         # start counter for _fetches_for_day
@@ -176,26 +178,30 @@ class FetchImages(object):
         for block in self.blocks.keys():
             start = '{} {}'.format(block, self.street_city_state_zip)
             end = '{} {}'.format(block+100, self.street_city_state_zip)
-            self.heading = self._get_heading(blk_st=start,blk_end=end)
+            self.heading = self._get_heading(blk_st=start,blk_end=end,block=block)
+            # error checking for blocks with no heading
+            if self.heading != 0:
+                for even_or_odd_block in self.blocks[block].keys():
+                    self.bearing = self._get_bearing(heading=self.heading,
+                                                side_of_st=even_heading,
+                                                blk=even_or_odd_block)
 
-            for even_or_odd_block in self.blocks[block].keys():
-                self.bearing = self._get_bearing(heading=self.heading,
-                                            side_of_st=even_heading,
-                                            blk=even_or_odd_block)
-
-                for house_num in self.blocks[block][even_or_odd_block]:
-                    address = '{} {}'.format(house_num, self.street_city_state_zip)
-                    start = time.time()
-                    print('Fetching {}'.format(address))
-                    # set params for this picture fetch
-                    self.set_payload(address=address,heading=self.bearing,API_key=self.API)
-                    # get picture object from google
-                    self._fetch_picture()
-                    # save picture object
-                    self._save_pic(address)
-                    counter += 1
-                    # display time to fetch picture
-                    print('Time to fetch: {}\n'.format(time.time() - start))
+                    for house_num in self.blocks[block][even_or_odd_block]:
+                        address = '{} {}'.format(house_num, self.street_city_state_zip)
+                        start = time.time()
+                        print('Fetching {}'.format(address))
+                        # set params for this picture fetch
+                        self.set_payload(address=address,heading=self.bearing,API_key=self.API)
+                        # get picture object from google
+                        self._fetch_picture()
+                        # save picture object
+                        self._save_pic(address)
+                        counter += 1
+                        # display time to fetch picture
+                        print('Time to fetch: {}\n'.format(time.time() - start))
+            else:
+                print("I could not find a heading for this block. Moving onto the next")
+                self.no_headings.append(start)
         # print helpful info
         self._info_for_day(num_fetches=counter,overall_start_time=overall_start)
 
@@ -215,9 +221,28 @@ class FetchImages(object):
         else:
             return 'I need a bearing'
 
-    def _get_heading(self,blk_st,blk_end):
+    def _get_heading(self,blk_st,blk_end,block):
+        block_num_start = block + 1
+        block_num_end = block + 100 - 1
+
+        ''' -- in case of error, work towards middle of block --'''
         block_start = self._get_meta_data(blk_st)
+        while block_start.json()['status'] != 'OK':
+            print('No meta data for {}. Trying {} {}'.format(blk_st,block_num_start,self.street_city_state_zip))
+            address = '{} {}'.format(block_num_start, self.street_city_state_zip)
+            block_start = self._get_meta_data(address)
+            block_num_start += 1
+            if block_num_start > block + 50:
+                return 0
         block_end = self._get_meta_data(blk_end)
+        while block_end.json()['status'] != 'OK':
+            print('No meta data for {}. Trying {} {}'.format(blk_end,block_num_end,self.street_city_state_zip))
+            address = '{} {}'.format(block_num_end, self.street_city_state_zip)
+            block_start = self._get_meta_data(address)
+            block_num_end -= 1
+            if block_num_end < block + 50:
+                return 0
+        ''' --                  END                           -- '''
         lat_start = math.radians(block_start.json()['location']['lat'])
         lng_start = math.radians(block_start.json()['location']['lng'])
         lat_end = math.radians(block_end.json()['location']['lat'])
@@ -241,6 +266,7 @@ class FetchImages(object):
         payload = {'location':address,
                     'key':self.API}
         return requests.get(link,params=payload)
+
 
 
     def _info_for_day(self,num_fetches,overall_start_time):
@@ -383,6 +409,10 @@ class FetchImages(object):
                 pass
         else:
             print('No picture fetched for this address')
+            print('Response status code: {}'.format(self.response.status_code))
+            if self.response.status_code == 403:
+                print('Exiting')
+                return 0
             pass
 
     def _check_for_repeats(self):

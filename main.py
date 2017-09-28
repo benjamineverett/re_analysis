@@ -92,7 +92,7 @@ def run_NN():
 
 if __name__ == '__main__':
 
-    get_them_pics('fairmount',19130)
+    # get_them_pics('fairmount',19130)
     get_them_pics('brewerytown',19121)
     # get_them_pics('pennsport',19148)
     # get_them_pics('pennsport',19147)
