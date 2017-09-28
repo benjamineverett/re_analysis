@@ -31,12 +31,15 @@ Curb Appeal is my attempt to try to capture a small piece of the on-the ground f
 	* [Feed Network](#feed-network)
 	* [Real Estate Data](#real-estate-data)
 
-2. [Real Estate Analysis - Minus Trees](#real-estate-analysis)
+2. [Visuals](#visuals)
+
+3. [Real Estate Analysis](#real-estate-analysis)
 
 	* [Model Architecture](#model-architecture)
 	* [Model Training](#model-training)
 	* [Results](#results)
-3. [All together now](#all-together-now)
+
+4. [All together now](#all-together-now)
 
 	* [Model Architecture](#model-architecture)
 	* [Model Training](#model-training)
@@ -56,7 +59,7 @@ I wrote [fetch_images.py](fetch_images.py) to utilize [Google Street View (GSV) 
 1. Given a street name and a block range, (e.g. 'N 26th st', 1300-1500 blocks) my script will calibrate its heading, then set the camera to take pictures at a 90 degree angle on each side of the car. The heading resets at the beginnin of every block
 
 <p align=“center”>
- <img alt="90 degrees" src="images/90_degreesjpeg" width=250>
+ <img alt="90 degrees" src="images/90_degrees.png" height=500>
 </p>
 
 
@@ -81,7 +84,7 @@ See examples below, labeled from left to right:
 	
 **'no tree'** Trees that are not a part of sidewalk architecture do not count in this model.
 	
-**'no tree** Trees that are down the block and not a part of parrellel running sidewalk do not count in this model
+**'no tree** Trees are not a part of the sidewalk running arrellel to the street the car is on do not count in this model
 
 <p align=“center”>
  <img alt="No tree" hspace=“25” src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
@@ -167,6 +170,19 @@ I obtained the public property data set from [Open Data Philly](https://www.open
 
 I performed the following operations on the data set using [re_data.py](re_data.py)
 
+## Visuals
+
+<img alt="Trees" src="images/practice_trees.png" height=350>
+
+
+## Real Estate Analysis
+
+### Model Architecture
+
+### Model Training
+
+### All together now
+
 ## Convolutional Neural Network
 
 [....!!!brief history of neural network!!!......](https://en.wikipedia.org/wiki/Convolutional_neural_network)
@@ -177,11 +193,7 @@ I performed the following operations on the data set using [re_data.py](re_data.
 
 ### Results
 
-## Real Estate Analysis - Minus Trees
 
-### Model Architecture
 
-### Model Training
 
-## All together now
 
