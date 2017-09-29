@@ -5,7 +5,7 @@
 def get_neighborhood_dict():
     # get dict containing: {neighborhood:{st_direction:{st_name, (block start, block end)}}}
     #                      {'fairmount':{'n_s': {'n 22nd st', (800,000)}},'brewerytown'..........}}}
-    with open('data/philadelphia_streets_by_neighborhood.txt','r') as f:
+    with open('data/newbold.txt','r') as f:
         return eval(f.read())
 
 def get_neighborhood_streets(neighborhood):
@@ -34,7 +34,7 @@ def get_them_pics(neighborhood,zip_code):
             # set heading for picture to be taken and fetch pic
             # either right or left
             if direction == 'n_s':
-                instantiated_class.fetch_pictures(even_heading='left')
+                instantiated_class.fetch_pictures(even_heading='right')
             if direction == 'e_w':
                 instantiated_class.fetch_pictures(even_heading='left')
 
@@ -93,7 +93,8 @@ def run_NN():
 if __name__ == '__main__':
 
     # get_them_pics('fairmount',19130)
-    get_them_pics('brewerytown',19121)
+    # get_them_pics('brewerytown',19121)
+    get_them_pics('newbold',19145)
     # get_them_pics('pennsport',19148)
     # get_them_pics('pennsport',19147)
     # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/test',
