@@ -37,24 +37,29 @@ class BlockCreator(object):
 
 class Randomizer(BlockCreator):
 
-    def __init__(self,neighborhood,num_pics,random_seed=17):
-        super(self.__class__,self).__init__(neighborhood)
+    def __init__(self,neighborhood,num_pics):
+        super(Randomizer, self).__init__(neighborhood)
         self.num_pics = num_pics
         self.folder_path = 'pics/{}'.format(neighborhood)
-        self._initialize(neighborhood)
-        self.random_seed=random_seed
+        self._initialize()
 
     def get_random_pics(self):
-        np.random.seed(self.random_seed)
+        self.pre_labeled_blocks = self._get_set_of_pre_labeled_blocks()
+        # np.random.seed(self.random_seed)
         # shuffle blocks
         np.random.shuffle(self.blocks)
+        # shuffle again, because it feels more random even though it is not
+        np.random.shuffle(self.blocks)
         self.pics_to_label = []
+        self.labeled_blocks = []
         while len(self.pics_to_label) < self.num_pics:
             block = self.blocks.pop(0)
-            for num in self._get_addresses(block).intersection(self.set_of_files):
-                self.pics_to_label.append(num)
+            self.labeled_blocks.append(block)
+            if block not in self.pre_labeled_blocks:
+                for num in self._get_addresses(block).intersection(self.set_of_files):
+                    self.pics_to_label.append((num,block))
 
-    def _initialize(self,neighborhood):
+    def _initialize(self):
         self.get_blocks()
         self.set_of_files = self._get_set_of_pics()
 
@@ -63,6 +68,17 @@ class Randomizer(BlockCreator):
         # e.g. 1345_n_26th_st_philadelphia_pa_19125.jpg
         # -> 1345 n 26th st philadelphia pa
         return {' '.join(os.fsdecode(file).split('_')[:-1]) for file in os.listdir(self.folder_path)}
+
+    def _get_set_of_pre_labeled_blocks(self):
+        blocks = []
+        with open('data/sampled_blocks.txt','r') as f:
+            lines = f.readlines()
+        for line in lines:
+            block = line[:-2].replace('(','').replace(')','').split(',')[0].replace("'","")
+            num = int(line[:-2].replace('(','').replace(')','').split(',')[1])
+            blocks.append((block,num))
+        return blocks
+
 
     def _get_addresses(self,block):
         return {'{} {} philadelphia pa'.format(num,block[0]) for num in range(block[1],block[1]+100)}

@@ -221,7 +221,7 @@ if __name__ == '__main__':
     NN.train_test_split(X_col_name='np_array',
                                         y_col_name='label',
                                         train_split=0.80)
-    NN.set_parameters(random_seed=1337,
+    NN.set_parameters(random_seed=17,
                                         batch_size=10,
                                         classes=10,
                                         epochs=1,
