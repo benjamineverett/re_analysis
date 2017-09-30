@@ -6,10 +6,10 @@ This class file contains two classes:
 import os # for file operations
 import cv2 # imaging library
 import numpy as np # numpy!!
-# from load_image import ViewPhoto
 import pandas as pd
 import pdb
 import time
+from BlockCreator import Randomizer
 
 class Labeler(object):
     '''
@@ -71,11 +71,11 @@ class Labeler(object):
                     # display picture
                     self._show_pic(picture=pic[0],counter=pic_counter)
                     # save picture and flip of picture
-                    cv2.imwrite('{}/{}_pic{}.jpg'.format(self.label_pics_folder_path,pict,i+1),pic[0])
-                    cv2.imwrite('{}/{}_flip{}.jpg'.format(self.label_pics_folder_path,pict,i+1),pic[1])
+                    cv2.imwrite('{}/{}_pic{}'.format(self.label_pics_folder_path,pict,i+1),pic[0])
+                    cv2.imwrite('{}/{}_flip{}'.format(self.label_pics_folder_path,pict,i+1),pic[1])
                     # append label and label for flip pic
-                    list_of_labels.append(['{}_pic{}.jpg'.format(pict,i+1),self.label])
-                    list_of_labels.append(['{}_flip{}.jpg'.format(pict,i+1),self.label])
+                    list_of_labels.append(['{}_pic{}'.format(pict,i+1),self.label])
+                    list_of_labels.append(['{}_flip{}'.format(pict,i+1),self.label])
                     # save every 100 labels
                     if pic_counter % 100 == 0:
                         self._save_labels(list_of_labels)
@@ -334,53 +334,3 @@ class Resizer(object):
             self.df.to_pickle('data/resized.pkl')
 
     ''' --------------- END HIDDEN METHODS --------------- '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-''' --------------- BEGIN REMOVED FUNCTIONS --------------- '''
-
-def check_for_repeats(self):
-    '''
-    -- Checks pics in folder for repeats --
-        INPUT: None
-        SELF: list_of_files
-        REVISE:
-            self.list_of_unique_pics = list of tuples containing (file name, vector) of unquie pics in folder
-            self.num_unique_pics = number of unique picture
-        RETURN: None
-    '''
-
-    list_of_unique_pics = []
-    list_of_unique_vectors = []
-    counter = 0
-    num_of_files = len(self.list_of_files)
-    for picture in self.list_of_files:
-        print('Checking {}. File {} of {}'.format(picture,counter+1,num_of_files))
-        # imread returns np array of photo
-        pic = cv2.imread('{}/{}'.format(self.folder_path,picture))
-        # append to lists if picture is unique
-        if pic.tolist() not in list_of_unique_vectors:
-            list_of_unique_pics.append(picture)
-            list_of_unique_vectors.append(pic.tolist())
-        counter += 1
-    # update attributes
-    self.num_unique_pics = len(list_of_unique_pics)
-    # currently list_of_unique_vectors is list of lists, return to list of np arrays
-    unique_vectors = np.array(list_of_unique_vectors)
-    # update self.list_of_unique_pics = [(file name, np.array of vector)]
-    self.list_of_unique_pics = list(zip(list_of_unique_pics,unique_vectors))
-    print('\nTotal pictures processed = {}\nTotal unique pictures = {}'.format(counter,self.num_unique_pics))

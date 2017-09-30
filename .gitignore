@@ -6,3 +6,4 @@ resized/
 pics/
 *.csv
 spark-warehouse/
+backup/

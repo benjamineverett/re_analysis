@@ -2,14 +2,14 @@
 
 ''' ----------------  Code for FETCHING pictures --------------- '''
 
-def get_neighborhood_dict():
+def get_neighborhood_dict(neighborhood):
     # get dict containing: {neighborhood:{st_direction:{st_name, (block start, block end)}}}
     #                      {'fairmount':{'n_s': {'n 22nd st', (800,000)}},'brewerytown'..........}}}
-    with open('data/newbold.txt','r') as f:
+    with open('data/{}.txt'.format(neighborhood),'r') as f:
         return eval(f.read())
 
 def get_neighborhood_streets(neighborhood):
-    neighborhoods = get_neighborhood_dict()
+    neighborhoods = get_neighborhood_dict(neighborhood)
     # FetchImages will save to folder specified by neighborhood
     # get dictionary specific to neighborhood, get n_s and e_w variables
     return neighborhoods[neighborhood], tuple(neighborhoods[neighborhood].keys())
@@ -34,7 +34,7 @@ def get_them_pics(neighborhood,zip_code):
             # set heading for picture to be taken and fetch pic
             # either right or left
             if direction == 'n_s':
-                instantiated_class.fetch_pictures(even_heading='right')
+                instantiated_class.fetch_pictures(even_heading='left')
             if direction == 'e_w':
                 instantiated_class.fetch_pictures(even_heading='left')
 
@@ -92,13 +92,13 @@ def run_NN():
 
 if __name__ == '__main__':
 
-    # get_them_pics('fairmount',19130)
+    get_them_pics('fairmount',19130)
     # get_them_pics('brewerytown',19121)
-    get_them_pics('newbold',19145)
+    # get_them_pics('newbold',19145)
     # get_them_pics('pennsport',19148)
     # get_them_pics('pennsport',19147)
-    # label_pics(file_path_to_label='/Users/benjaminreverett/Desktop/test',
-    #            file_path_of_labeled='/Users/benjaminreverett/Desktop/test/labeled')
+    # label_pics(file_path_to_label='/pics/brewerytown/batch1',
+            #    file_path_of_labeled='/pics/to_resize')
     # resize_labeled_pics(filepath_to_resize='/Users/benjaminreverett/Desktop/test/labeled',
     #                     filepath_store_resized='/Users/benjaminreverett/Desktop/test/resized',
     #                     num_pixels=50,
