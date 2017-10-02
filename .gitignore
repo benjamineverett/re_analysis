@@ -7,3 +7,4 @@ pics/
 *.csv
 spark-warehouse/
 backup/
+*.html

@@ -8,6 +8,8 @@ from keras.utils import np_utils
 from keras import backend as K
 from keras.callbacks import TensorBoard
 import time
+import matplotlib.pyplot as plt
+from keras.models import load_model
 
 '''
 Much credit to Keras, their excellent documentation and thorough tutorials
@@ -168,29 +170,32 @@ class NeuralNetwork(object):
         # set model
         self.model = Sequential()
         # 2 convolutional layers followed by a pooling layer followed by dropout
+
         ''' -- Layer 1 -- '''
         self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
                                 border_mode='valid',
                                 input_shape=self.input_shape))
         self.model.add(Activation('tanh'))
+        # self.model.add(Dropout(0.25))
+
         ''' -- Layer 2 -- '''
-        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
+        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
+                                border_mode='valid',
+                                input_shape=self.input_shape))
         self.model.add(Activation('tanh'))
-
-        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1]))
-        self.model.add(Activation('tanh'))
-
+        # self.model.add(Dropout(0.25))
 
         ''' -- Layer 3 -- '''
         self.model.add(MaxPooling2D(pool_size=self.pool_size))
         self.model.add(Dropout(0.25))
         # transition to an mlp
         self.model.add(Flatten())
-        self.model.add(Dense(50))
+        self.model.add(Dense(25))
         self.model.add(Activation('tanh'))
         self.model.add(Dropout(0.25))
         self.model.add(Dense(self.nb_classes))
-        ''' -- Layer 4 -- '''
+
+        ''' -- Classification -- '''
         self.model.add(Activation('softmax'))
         #compile(self, optimizer, loss, metrics=None, sample_weight_mode=None, weighted_metrics=None)
         self.model.compile(loss='categorical_crossentropy',
@@ -204,7 +209,9 @@ class NeuralNetwork(object):
                                 embeddings_metadata=True)
 
         self.model.fit(X_train, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
-                  verbose=1, validation_data=(X_test, Y_test),callbacks=[tbCallBack])
+                  verbose=1, validation_data=(X_test, Y_test),callbacks=[tbCallBack],
+                #   class_weight={0:1,1:10},
+                  class_weight='auto')
         score = self.model.evaluate(X_test, Y_test, verbose=0)
         end_time = time.time()-start
         day = time.ctime().lower().replace(' ','_')
@@ -212,22 +219,26 @@ class NeuralNetwork(object):
         print('Test accuracy:', score[1])
         print('Total time to run: {}'.format(int(end_time/60)))
         self.model.save('models/{}_{}'.format(round(score[1],4),day))
+
+
 if __name__ == '__main__':
     NN = NeuralNetwork()
     NN.import_data(label_file_path='data/labeled.pkl',
-                                    array_file_path='data/resized.pkl',
-                                    merge_on='filename')
+                    array_file_path='data/resized.pkl',
+                    merge_on='filename')
 
     NN.train_test_split(X_col_name='np_array',
-                                        y_col_name='label',
-                                        train_split=0.80)
+                        y_col_name='label',
+                        train_split=0.75)
+
     NN.set_parameters(random_seed=17,
-                                        batch_size=10,
-                                        classes=10,
-                                        epochs=1,
-                                        image_dims=(100,50),
-                                        num_filters=3,
-                                        pool = (2, 2),
-                                        kern_size = (2, 2),
-                                        colors=3)
+                        batch_size=5000,
+                        classes=10,
+                        epochs=50,
+                        image_dims=(100,50),
+                        num_filters=10,
+                        pool = (3, 3),
+                        kern_size = (3, 3),
+                        colors=3)
     NN.run_models()
+    # plt.()

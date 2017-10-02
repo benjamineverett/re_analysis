@@ -212,12 +212,22 @@ class Resizer(object):
     '''
 
     def __init__(self,
+                filepath,
                 num_pixels,
-                show_resized_pic=False):
-        self.filepath = 'pics/labeled'
-        self.resized_file_path = 'pics/resized'
+                resized_file_path,
+                move,
+                df_filepath,
+                df_backup_filepath,
+                df_backup_name,
+                show_resized_pic=False,):
+        self.filepath = filepath
+        self.resized_file_path = resized_file_path
         self.num_pixels = num_pixels
         self.show_resized_pic = show_resized_pic
+        self.move = move
+        self.df_filepath = df_filepath
+        self.df_backup_filepath = df_backup_filepath
+        self.df_backup_name = df_backup_name
 
     def resize_pics(self,to_np_array=True):
         '''
@@ -253,29 +263,30 @@ class Resizer(object):
                 # give a little feedback, make us feel like the computer is working
                 print('Resizing {}. Picture {} of {}'.format(picture,counter,len(files)))
                 # resize picture
-                resized = self._resize_pic(picture)
+                pic1, pic2 = self._resize_pic(picture)
                 # if True, show picture
                 if self.show_resized_pic:
                     self._show_pic()
                 # write picture to file
-                cv2.imwrite('{}/{}'.format(self.resized_file_path,picture),resized)
-                counter += 1
-                # append to list as [filename, np.array]
-                if to_np_array:
-                    array.append([picture, np.array(cv2.imread('{}/{}'.format(self.resized_file_path,picture)))])
-                    if counter % 1000 == 0:
-                        if to_np_array:
-                            print('\n-------------------- SAVING DATA ---------------------\n')
-                            self._save_df(data=array)
-                            array=[]
+                for i, half_pic in enumerate([pic1,pic2]):
+                    cv2.imwrite('{}/{}_pic{}.jpg'.format(self.resized_file_path,picture.split('.')[0],i+1),half_pic)
+                    counter += 1
+                    # append to list as [filename, np.array]
+                    if to_np_array:
+                        array.append(['{}_pic{}'.format(picture.split('.')[0],i+1), np.array(half_pic)])
+                        #np.array(cv2.imread('{}/{}_pic{}'.format(self.resized_file_path,picture,i)))])
+                        if counter % 1000 == 0:
+                            if to_np_array:
+                                print('\n-------------------- SAVING DATA ---------------------\n')
+                                self._save_df(data=array)
+                                array=[]
         # append list to dataframe
         if to_np_array:
             self._save_df(data=array)
-        for picture in files:
-            print('Moving {}'.format(picture))
-            os.rename('{}/{}'.format(self.filepath,picture), 'pics/labeled_resized/{}'.format(picture))
-
-
+        if self.move:
+            for picture in files:
+                print('Moving {}'.format(picture))
+                os.rename('{}/{}'.format(self.filepath,picture), 'pics/labeled_resized/{}'.format(picture))
 
     ''' --------------- BEGIN HIDDEN METHODS --------------- '''
 
@@ -293,12 +304,18 @@ class Resizer(object):
         '''
         # read image from folder/filename
         image = cv2.imread('{}/{}'.format(self.filepath,pic))
+        #split image
+        pic1 = image[0:600,0:300]
+        pic2 = image[0:600,301:600]
+        image_size = pic1
         # resize according to height
-        r = self.num_pixels / image.shape[1]
+        r = self.num_pixels / image_size.shape[1]
         # set dimensions of new image
-        dim = (self.num_pixels, int(image.shape[0] * r))
+        dim = (self.num_pixels, int(image_size.shape[0] * r))
         # resize image and return as numpy array
-        return cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+        pic1 = cv2.resize(pic1, dim, interpolation = cv2.INTER_AREA)
+        pic2 = cv2.resize(pic2, dim, interpolation = cv2.INTER_AREA)
+        return pic1, pic2
 
     def _show_pic(self,pic):
         '''
@@ -324,25 +341,31 @@ class Resizer(object):
 
             RETURNS
             -------
-                Saves data as pickeled panda's data frame
+                Saves data as pickled panda's data frame
         '''
         # check if dataframe exists, if not, create new dataframe
-        if os.path.isfile('data/resized.pkl'):
+        if os.path.isfile(self.df_filepath):
             # read and save old df
-            old_df = pd.read_pickle('data/resized.pkl')
-            old_df.to_pickle('data/backups/backup_resized_old_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
+            old_df = pd.read_pickle(self.df_filepath)
+            old_df.to_pickle('{}/{}_old_{}.pkl'.format(self.df_backup_filepath,
+                                                        self.df_backup_name,
+                                                        time.ctime().lower().replace(' ','_')))
             # create and back up new df
             self.df = pd.DataFrame(data,columns=['filename', 'np_array'])
-            self.df.to_pickle('data/backups/backup_resized_new_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
+            self.df.to_pickle('{}/{}_new_{}.pkl'.format(self.df_backup_filepath,
+                                                        self.df_backup_name,
+                                                        time.ctime().lower().replace(' ','_')))
             # combine two dfs
             new_df = old_df.append(self.df)
             new_df.reset_index(inplace=True,drop=True)
             # overwrite old instance of resized.pkl
-            new_df.to_pickle('data/resized.pkl')
+            new_df.to_pickle(self.df_filepath)
         else:
             # create new df and save as pickle
             self.df = pd.DataFrame(data,columns=['filename', 'np_array'])
-            self.df.to_pickle('data/resized.pkl')
+            self.df.to_pickle(self.df_filepath)
+
+
 
     ''' --------------- END HIDDEN METHODS --------------- '''
 
@@ -351,10 +374,37 @@ if __name__ == '__main__':
     # fairmount.label_pics()
     # resize = Resizer(num_pixels=50)
     # resize.resize_pics()
-    brewerytown = Labeler('brewerytown',900,19121)
-    brewerytown.label_pics()
-    resize = Resizer(num_pixels=50)
-    resize.resize_pics()
+    # brewerytown = Labeler('brewerytown',900,19121)
+    # brewerytown.label_pics()
+    # resize = Resizer(num_pixels=50)
+    # resize.resize_pics()
+    # pennsport = Labeler('pennsport',900,19147)
+    # pennsport.label_pics()
+    # resize = Resizer(num_pixels=50)
+    # resize.resize_pics()
+    # west_philly_north = Labeler('west_philly_north',250,19143)
+    # west_philly_north.label_pics()
+    # resize = Resizer(filepath='pics/labeled',
+    #                 num_pixels=50,
+    #                 resized_file_path='pics/resized',
+    #                 move=True,
+    #                 df_filepath='data/resized.pkl',
+    #                 df_backup_filepath='data/backups',
+    #                 df_backup_name='backup_resized'
+    #                 )
+    # resize.resize_pics()
+    for neighborhood in ['brewerytown','fairmount','newbold','pennsport','west_philly_north']:
+        resize = Resizer(filepath='pics/{}'.format(neighborhood),
+                        num_pixels=50,
+                        resized_file_path='pics/resized',
+                        move=False,
+                        df_filepath='data/all_resized.pkl',
+                        df_backup_filepath='data/backups',
+                        df_backup_name='backup_all_resized'
+                        )
+        resize.resize_pics()
+
+
 
 #
 #
