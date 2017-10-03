@@ -54,7 +54,7 @@ I wrote [fetch_images.py](fetch_images.py) to utilize [Google Street View API](h
 
 4. At the end of each series of fetches, the script will **write** to a pandas data frame the **time, date, and number of fetches** and report this back to the user (GSV will allow 25,000 free images a day).
 
-5.  I selected 4 differing neighborhoods within Philadelphia. From my knowledge of the region I know that each neighborhood contained differing house architecture, street architecture and number of trees, as well as reflecting vastly different average price points. I had my function fetch all pictures from each neighborhood.
+5. I selected 4 differing neighborhoods within Philadelphia. From my knowledge of the region I know that each neighborhood contained differing house architecture, street architecture and number of trees, as well as reflecting vastly different average price points. I had my function fetch all pictures from each neighborhood.
 
 
 #### Label
@@ -109,7 +109,7 @@ Again, the process of labeling happens within [label_pics.py](label_pics.py) usi
  <img alt="no_tree" hspace=“25” src="images/no_tree.jpg" width=250>
 </p>
 
-4. The Labeler than mirrors each photo with my assigned label and saves the picture
+5. The Labeler than **mirrors** each photo with my assigned label and saves the picture
 
 <p align=“center”>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
@@ -127,7 +127,7 @@ Labeler Review:
 	address_pic2
 	address_pic2_flip
 
-Every 100 pics, the labeler will **save** the **filename and label** to a pandas data frame as well as saving a backup of the data frame.
+6. Every 100 pics, the labeler will **save** the **filename and label** to a pandas data frame as well as saving a backup of the data frame.
 
 #### Resize
 After labeling, the pictures are resized using the Resizer class in [label_pics.py](label_pics.py) in the following manner:
