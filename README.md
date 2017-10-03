@@ -134,7 +134,7 @@ After labeling, the pictures are resized using the Resizer class in [label_pics.
 
 1. The folder of labeled pics is specified.
 
-2. Each picture is resized. This can be specified, in my particular case images are 600x600 from GSV(max resolution from GSV is 1000x1000). They are then split vertically, so when split they become 600x300. When resized the images become 150x50.
+2. Each picture is resized. This can be specified, in my particular case images are 600x600 from GSV(max resolution from GSV is 1000x1000). They are then split vertically, so when split they become 600x300. When resized the images become 100x50.
 <p align=“center”>
  <img alt="Original Picture" src="images/107_morris_st_philadelphia_pa_19147_pic1.jpg" width=50>
 </p>
