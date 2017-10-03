@@ -70,14 +70,17 @@ Since I am trying to measure curb appeal, I decided on a strict criteria:
 <p align=“center”>
 	<img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121 copy.jpg" width=450>
 </p>
+
 2. Trees visible in the background **do not** count.
 <p align=“center”>
 	<img alt="No tree" hspace=“25” src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
 </p>
+
 3. **Intersections** prove especially problematic. I decided that trees must be **on** a **parallel running block** to the one the "car" is on. Stated another way, I am looking trees that are **orthogonally adjacent** to the path of the "car."
 <p align=“center”>
 	<img alt="No tree" hspace=“25” src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
 </p>
+
 4. A portion of the tree trunk, however small, must be visible for me to label as a tree. **Only leaves**, or **only branches** is **not enough**.
 <p align=“center”>
 	<img alt="No tree" hspace=“25” src="images/2910_cambridge_st_philadelphia_pa_19130.jpg" width=450>
