@@ -29,7 +29,11 @@ Curb Appeal is my attempt to try to capture a small piece of an on-the ground fa
 
 2. [Results](#results)
 
-	*
+	* [The Numbers](#the-numbers)
+	* [The Visuals](#the visuals)
+	* [The Output](#the-output)
+
+3. [Next Steps](#next-steps)
 
 
 
@@ -138,6 +142,7 @@ After labeling, the pictures are resized using the Resizer class in [label_pics.
 <p align=“center”>
  <img alt="Original Picture" src="images/107_morris_st_philadelphia_pa_19147_pic1.jpg" width=50>
 </p>
+
 3. The resized image is saved for record keeping and bookkeeping purposes.
 
 4. When reading an image, OpenCV **converts** it to a **numpy array**. The **filename and array** is saved to a pandas data frame.
@@ -146,13 +151,13 @@ After labeling, the pictures are resized using the Resizer class in [label_pics.
 
 Neural Network Architecture:
 
-I used a Sequential Neural Network using [Keras](https://keras.io/) and [Tensorflow](https://www.tensorflow.org/) on the backend. My model is built in [cnn.py](cnn.py) with the following architecture:
+I used a Convolutional Neural Network using [Keras](https://keras.io/) and [Tensorflow](https://www.tensorflow.org/) on the backend. My model is built in [cnn.py](cnn.py) with the following architecture:
 
 1. I trained my model on [AWS](aws.amazon.com) using a p2.8xlarge instance. I used this instance, because being a GPU instance my network took on average about **2 minutes to train**. As a comparison, on my own macbook air it took about 45 minutes to train my model.
 
 2. I decided to keep my network **simple** for experimentation purposes.  I used two convolution layers and one pooling layer.
 
-3. Each layer uses the **tanh** activation function, as this produced the best accuracy for my models.
+3. Each layer uses the **hyperbolic tangent** activation function, as this produced the best accuracy for my models.
 
 4. My pooling layers drops out 25% of the neurons before and after pooling to prevent overfitting.
 
@@ -179,11 +184,11 @@ Train the Network:
 My data set contains approximately 15,000 images. Therefore the Network trained on  ~9,500 images, validated on ~2,500 images and tested on ~3,000 images.
 
 <p align=“center”>
-	<img alt="recall and precission" src="images/all.png" width=550>
+	<img alt="recall and precision" src="images/all.png" width=550>
 </p>
 
 <p align=“center”>
-	<img alt="recall and precission" src="images/recall.png" width=550>
+	<img alt="recall and precision" src="images/recall.png" width=550>
 </p>
 
 The numbers are unequivocally disappointing.
@@ -212,27 +217,36 @@ Analysis:
 
 The model likes phone poles.
 <p align=“center”>
-	<img alt="labels" src="images/phone_pole.png" width=350>
+	<img alt="labels" src="images/phone_pole.png" width=250>
 </p>
 
 The model is overfitting on trees that do not fit my criteria
 <p align=“center”>
-	<img alt="labels" src="images/tree.png" width=350>
+	<img alt="labels" src="images/tree.png" width=250>
 </p>
 
-Depth perception off
+The depth perception of the model is off
 <p align=“center”>
-	<img alt="labels" src="images/depth.png" width=350>
+	<img alt="labels" src="images/depth.png" width=250>
 </p>
 
 The model likes green
 <p align=“center”>
-	<img alt="labels" src="images/green_house.png" width=350>
+	<img alt="labels" src="images/green_house.png" width=250>
 </p>
 
+#### The Output
 
 ## Next Steps
 
-Depth perception is an issue for convolutional neural networks. [This article from Stanford discusses CNN's trouble with depth perception](http://cs231n.stanford.edu/reports/2017/pdfs/200.pdf)
+**Unbalanced data**
+My data consists of ~15,000 images, of which ~2,250 are labeled as 'TREE' or approximately an 85%/15% imbalance. I knew that given the small amount of images and imbalanced nature of my data, predicting on the test set would be a challenge. I adjusted the weights within my model to account for this imbalance, however, balanced data would still be best.
 
-Reevaluate my criteria for labeling
+**Depth Perception**
+Depth perception can be an issue for convolutional neural networks. [This article from Stanford discusses CNN's trouble with depth perception](http://cs231n.stanford.edu/reports/2017/pdfs/200.pdf)
+
+**Good Criteria?**
+I chose very stringent criteria for my model. The goal is to use my model as a feature in real estate price predictions. With this in mind, does being able to see a tree down the block or in the distance affect an individual's purchase decision? If I constructed my model around this hypothesis I'd have a more precise feature to pass into my real estate prediction model and be able to test its' validity.
+
+**Increase complexity of Neural Network**
+In my quest to provide a proof of concept, I chose to keep the neural network very simple and to live with the results. I could reasonably expect my network to improve with greater depth.
