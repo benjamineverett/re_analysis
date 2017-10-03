@@ -72,7 +72,7 @@ Since I am trying to measure curb appeal, I decided on a strict criteria:
 </p>
 2. Trees visible in the background **do not** count.
 <p align=“center”>
-	<img alt="No tree" hspace=“25” src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=350>
+	<img alt="No tree" hspace=“25” src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
 </p>
 3. **Intersections** prove especially problematic. I decided that trees must be **on** a **parallel running block** to the one the "car" is on. Stated another way, I am looking trees that are **orthogonally adjacent** to the path of the "car."
 <p align=“center”>
@@ -80,7 +80,7 @@ Since I am trying to measure curb appeal, I decided on a strict criteria:
 </p>
 4. A portion of the tree trunk, however small, must be visible for me to label as a tree. **Only leaves**, or **only branches** is **not enough**.
 <p align=“center”>
-	<img alt="No tree" hspace=“25” src="images/2910_cambridge_st_philadelphia_pa_19130.jpg" width=350>
+	<img alt="No tree" hspace=“25” src="images/2910_cambridge_st_philadelphia_pa_19130.jpg" width=450>
 </p>
 
 
@@ -88,21 +88,22 @@ Again, the process of labeling happens within [label_pics.py](label_pics.py) usi
 
 1. I wrote my function to **randomly choose a block** in the neighborhood I specified, then **fetch all pictures** associated with that block up to **the number of pics I specify**
 
-2. The Labeler **fetches** a picture...
+2. The Labeler **fetches** a picture
 <p align=“center”>
  <img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=450>
 </p>
-3. ..to **avoid over or under counting trees**, and provide **more data to train on**, the Labeler then **splits the photo** vertically and displays each image for labeling.
+
+3. To **avoid over or under counting trees**, and provide **more data to train on**, the Labeler then **splits the photo** vertically and displays each image for labeling.
 <p align=“center”>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
 </p>
 
-4. I then label as **YES tree** or **NO tree** for each split image.
+4. I then label as **YES** tree or **NO** tree for each split image.
 
 <p align=“center”>
- <img alt="yes_tree" hspace=“25” src="images/yes_tree.jpeg" width=250>
- <img alt="no_tree" hspace=“25” src="images/no_tree.jpeg" width=250>
+ <img alt="yes_tree" hspace=“25” src="images/yes_tree.jpg" width=250>
+ <img alt="no_tree" hspace=“25” src="images/no_tree.jpg" width=250>
 </p>
 
 4. The Labeler than mirrors each photo with my assigned label and saves the picture
