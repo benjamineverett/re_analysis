@@ -234,9 +234,6 @@ class NeuralNetwork(object):
         df_predicted = df_predicted.drop('np_array')
         df_predicted.to_pickle('data/predicted_{}.pkl'.format(time.ctime().replace(' ','_')))
 
-
-
-
 if __name__ == '__main__':
     NN = NeuralNetwork()
     NN.import_data(label_file_path='data/labeled.pkl',
