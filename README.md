@@ -209,22 +209,22 @@ Analysis:
 
 The model likes phone poles.
 <p align=“center”>
-	<img alt="labels" src="images/phone_pole.png" width=450>
+	<img alt="labels" src="images/phone_pole.png" width=350>
 </p>
 
 The model is overfitting on trees that do not fit my criteria
 <p align=“center”>
-	<img alt="labels" src="images/tree.png" width=450>
+	<img alt="labels" src="images/tree.png" width=350>
 </p>
 
 Depth perception off
 <p align=“center”>
-	<img alt="labels" src="images/depth.png" width=450>
+	<img alt="labels" src="images/depth.png" width=350>
 </p>
 
 The model likes green
 <p align=“center”>
-	<img alt="labels" src="images/green_house.png" width=450>
+	<img alt="labels" src="images/green_house.png" width=350>
 </p>
 
 
