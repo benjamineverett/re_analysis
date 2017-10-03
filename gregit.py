@@ -179,7 +179,7 @@ class NeuralNetwork(object):
         self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
                                 border_mode='valid',
                                 input_shape=self.input_shape))
-        self.model.add(Activation('tanh'))
+        self.model.add(Activation('relu'))
         # self.model.add(Dropout(0.25))
 
         ''' -- Layer 2 -- '''
@@ -194,7 +194,7 @@ class NeuralNetwork(object):
         self.model.add(Dropout(0.25))
         # transition to an mlp
         self.model.add(Flatten())
-        self.model.add(Dense(25))
+        self.model.add(Dense(100))
         self.model.add(Activation('tanh'))
         self.model.add(Dropout(0.25))
         self.model.add(Dense(self.nb_classes))
