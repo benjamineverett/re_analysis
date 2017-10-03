@@ -7,193 +7,229 @@ I listened to a podcast about a year and a half ago regarding two data scientist
 
 Fundamentally, real estate is local and grounded in the physical space directly viewable to the human eye. In Philadelphia, being a very provincal city, this is even more the case than many cities. Antedotally, I bought a house 4 blocks away from a friend. My house cost 5 times less. It is difficult for a big picture algorithm to take into account the small details of the literal, on the ground, built envirnoment that buyers take into account when purchasing real estate.
 
-Many thanks to the excellent documentation provided by [Keras](https://keras.io/), the excellent OpenCV tutorials at [pyimagesearch](https://www.pyimagesearch.com/) and OF COURSE the [stackoverflow community](https://stackoverflow.com/).
+Many thanks to the excellent documentation provided by [Keras](https://keras.io/),  and OF COURSE the [stackoverflow community](https://stackoverflow.com/).
 
 # Curb appeal
 
 ## Objective
 
-Curb Appeal is my attempt to try to capture a small piece of the on-the ground factors affectings real estate prices.
+Curb Appeal is my attempt to try to capture a small piece of an on-the ground factor affecting real estate prices.
 
 1 - Using a **convolutional neural network**, build an algorithm to **count** the **number of trees on a block**
-
-2 - Using a simple **linear regression model**, predict real estate prices with publicly available real estate data
-
-3 - Create 'number of trees on a block' as an **additional feature** in the linear regression model and see if this improves price predictions
 
 ## Table of Contents
 
 1. [Dataset: Collection, Preprocessing and Creation](#dataset-collection-preprocessing-and-creation)
-	
+
 	* [Fetch](#fetch)
 	* [Label](#label)
 	* [Resize](#resize)
 	* [Feed Network](#feed-network)
-	* [Real Estate Data](#real-estate-data)
 
-2. [Visuals](#visuals)
 
-3. [Real Estate Analysis](#real-estate-analysis)
+2. [Results](#results)
 
-	* [Model Architecture](#model-architecture)
-	* [Model Training](#model-training)
-	* [Results](#results)
+	*
 
-4. [All together now](#all-together-now)
-
-	* [Model Architecture](#model-architecture)
-	* [Model Training](#model-training)
-	* [Results](#results)
 
 
 ## Dataset: Collection, Preprocessing and Creation
 
 My pipeline moves in the following fashion:
 
-	Fetch -> Label -> Resize -> Feed to Convoluted Network
+	FETCH -> LABEL -> RESIZE -> FEED
 
 #### Fetch
 
-I wrote [fetch_images.py](fetch_images.py) to utilize [Google Street View (GSV) API](https://developers.google.com/maps/documentation/streetview/) and [GSV meta data API](https://developers.google.com/maps/documentation/streetview/metadata) to perform operations in the following manner.
+I wrote [fetch_images.py](fetch_images.py) to utilize [Google Street View API](https://developers.google.com/maps/documentation/streetview/) (GSV) and [GSV meta data API](https://developers.google.com/maps/documentation/streetview/metadata) to perform operations in the following manner.
 
-1. Given a street name and a block range, (e.g. 'N 26th st', 1300-1500 blocks) my script will calibrate its heading, then set the camera to take pictures at a 90 degree angle on each side of the car. The heading resets at the begining of every block
-
+1. Given a **street name** and a **block range**, (e.g. 'N 26th st', 1300-1500 blocks) my script will **calibrate its heading**, then set the camera to take pictures at a **90 degree angle to heading*** The heading resets at the beginning of every block
 <p align=“center”>
  <img alt="90 degrees" src="images/90_degrees.png" height=500>
 </p>
 
-
-2. Each picture is checked against the last picture to make sure it is not a repeat.
+2. Often GSV will have one picture for multiple addresses, or GSV will have the same picture for many addresses at the end of the block. In [fetch_images.py](fetch_images.py) **each picture** is **checked** against the **last picture** to make sure it is not a repeat.
 
 3. Each original picture is saved as house number, street name, city, state and zip. E.g. '1338_n_26th_st_philadelphia_pa_19121.jpg'
 
-4. At the end of each series of fetches, the script will write to a pandas dataframe the time, date, and number of fetches and report this back to the user(GSV will allow 25,000 free images a day)
+4. At the end of each series of fetches, the script will **write** to a pandas data frame the **time, date, and number of fetches** and report this back to the user (GSV will allow 25,000 free images a day).
 
-#### Label 
-After fetching, the process moves through [label_pics.py](label_pics.py). Label pics heavily utilizes [OpenCV](http://opencv.org/). The OpenCV build [is specific](https://github.com/opencv/opencv_contrib) and can be installed via 'pip install opencv-contrib-python'.
+5.  I selected 4 differing neighborhoods within Philadelphia. From my knowledge of the region I know that each neighborhood contained differing house architecture, street architecture and number of trees, as well as reflecting vastly different average price points. I had my function fetch all pictures from each neighborhood.
 
-One of the challenges of labeling is to decide what is a tree and what is not.
 
-I decided that since I am measuring curb appeal I want to count trees that are a part of the sidewalk archicture, not trees visible in the background. As such, I only counted trees which were approximately straight on in my photos, a part of the sidewalk, and had a part of their trunk visible.
+#### Label
+After fetching, the process moves through [label_pics.py](label_pics.py). Label pics heavily utilizes [OpenCV](http://opencv.org/). Many thanks to the excellent OpenCV tutorials at [pyimagesearch](https://www.pyimagesearch.com/)
 
-Intersections proved especially problimatic, since often the angle of the camera was off. Again, if the tree was directly orthogonal to the path of the car, I counted it as a tree.
+The OpenCV build [is specific](https://github.com/opencv/opencv_contrib) and can be installed via **'pip install opencv-contrib-python'**.
 
-See examples below, labeled from left to right: 
-	
-**'no tree'**
-	
-**'no tree'** Trees that are not a part of sidewalk architecture do not count in this model.
-	
-**'no tree** Trees are not a part of the sidewalk running arrellel to the street the car is on do not count in this model
+One of the **challenges** of labeling is to decide what **is a tree** and what **is not a tree.**
 
+Since I am trying to measure curb appeal, I decided on a strict criteria:
+
+1. I want to count trees that are a part of the sidewalk architecture. **YES** tree.
 <p align=“center”>
- <img alt="No tree" hspace=“25” src="images/1225_n_28th_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
- <img alt="No tree" hspace=“25” src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
- <img alt="No tree" hspace=“25” src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=250>
+	<img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=450>
+</p>
+2. Trees visible in the background **do not** count. **NO** tree.
+<p align=“center”>
+	<img alt="No tree" hspace=“25” src="images/1206_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=350>
+</p>
+3. **Intersections** prove especially problematic. I decided that trees must be **on** a **parallel running block** to the one the "car" is on. Stated another way, I am looking trees that are **orthogonally adjacent** to the path of the "car"  The photo below is **NO** tree.
+<p align=“center”>
+	<img alt="No tree" hspace=“25” src="images/1207_n_myrtlewood_st_philadelphia_pa_19121.jpg_flip2.jpg" width=350>
+</p>
+4. A portion of the tree trunk, however small, must be visible for me to label as a tree. **Only leaves**, or **only branches** is **not enough**. Below, **YES** tree.
+<p align=“center”>
+	<img alt="No tree" hspace=“25” src="images/2910_cambridge_st_philadelphia_pa_19130.jpg
+" width=350>
 </p>
 
 
-The process of labeling happens in the following manner:
+Again, the process of labeling happens within [label_pics.py](label_pics.py) using the Labeler class. The labeling happens in the following manner:
 
-1. Folder of pics to label is specified.
+1. I wrote my function to **randomly choose a block** in the neighborhood I specified, then **fetch all pictures** associated with that block up to **the number of pics I specify**
 
-2. The labeler splits the photo in half and displays each image for labeling.
-
-**original pic**
+2. The Labeler **fetches** a picture...
 <p align=“center”>
- <img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=250> 
+ <img alt="Original Picture" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg" width=450>
 </p>
-
-**original pic split**	
+3. ..to **avoid over or under counting trees**, and provide **more data to train on**, the Labeler then **splits the photo** vertically and displays each image for labeling.
 <p align=“center”>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic2.jpg" width=250>
 </p>
 
-3. I then label as 'yes tree' or 'no tree' for each split image.
+4. I then label as **YES tree** or **NO tree** for each split image.
 
 <p align=“center”>
  <img alt="yes_tree" hspace=“25” src="images/yes_tree.jpeg" width=250>
  <img alt="no_tree" hspace=“25” src="images/no_tree.jpeg" width=250>
 </p>
 
-4. The labeler than mirrors the photo with my assigned label and saves.
+4. The Labeler than mirrors each photo with my assigned label and saves the picture
 
 <p align=“center”>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_pic1.jpg" width=250>
  <img alt="Split into two" src="images/1205_n_31st_st_philadelphia_pa_19121.jpg_flip1.jpg" width=250>
 </p>
 
-5. Review: 
+Labeler Review:
 
-	original image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 mirrored -> repeat for image2
+	original image -> image split into image1, image2 -> image1 displayed and assigned label -> image1 and image2 mirrored -> images saved
 
-	from original image 4 images saved in following manner:
+	From the original **one** image **four** images are labeled and saved in following manner:
 
-	address_image1
-	address_image1_flip
-	address_image2
-	address_image2_flip
-	
-6. Every 100 pics, the labeler script will save the filename and label to a pandas dataframe as well as saving a backup of the dataframe.
+	address_pic1
+	address_pic1_flip
+	address_pic2
+	address_pic2_flip
+
+Every 100 pics, the labeler will **save** the **filename and label** to a pandas data frame as well as saving a backup of the data frame.
 
 #### Resize
-After labeling, the pictures are resized. Again, using OpenCV and performed in the following manner.
+After labeling, the pictures are resized using the Resizer class in [label_pics.py](label_pics.py) in the following manner:
 
-1. Folder of labeled pics is specified.
+1. The folder of labeled pics is specified.
 
 2. Each picture is resized. This can be specified, in my particular case images are 600x600 from GSV(max resolution from GSV is 1000x1000). They are then split vertically, so when split they become 600x300. When resized the images become 150x50.
-
+<p align=“center”>
+ <img alt="Original Picture" src="images/107_morris_st_philadelphia_pa_19147_pic1.jpg" width=50>
+</p>
 3. The resized image is saved for record keeping and bookkeeping purposes.
 
-4. When reading an image, OpenCV converts it to a [numpy array](http://www.numpy.org/). This array along with the filename is saved to a pandas dataframe.
+4. When reading an image, OpenCV **converts** it to a **numpy array**. The **filename and array** is saved to a pandas data frame.
 
 #### Feed Network
 
-I now have two separate dataframes, one containing filename and labels, and another containing filename and numpy arrays. I perform the following operations in a Convolutional Neural Network in [cnn.py](cnn.py)
+Neural Network Architecture:
 
-1. Each datafame is loaded
+I used a Sequential Neural Network using [Keras](https://keras.io/) and [Tensorflow](https://www.tensorflow.org/) on the backend. My model is built in [cnn.py](cnn.py) with the following architecture:
 
-2. The dataframes are joined on 'filename'
+1. I trained my model on [AWS](aws.amazon.com) using a p2.8xlarge instance. I used this instance, because being a GPU instance my network took on average about **2 minutes to train**. As a comparison, on my own macbook air it took about 45 minutes to train my model.
 
-3. I now have one dataframe containing 'filename', 'label', and 'np_array'
+2. I decided to keep my network **simple** for experimentation purposes.  I used two convolution layers and one pooling layer.
 
-4. The arrays and labels are formated in the correct manner to feed into [Keras](https://keras.io/)
+3. Each layer uses the **tanh** activation function, as this produced the best accuracy for my models.
 
-5. The information passes through the CNN and I am able to see the accuracy of the model predictions.
+4. My pooling layers drops out 25% of the neurons before and after pooling to prevent overfitting.
 
-6. If the accuracy of the model beats previous model accuracies, then the model is saved to used for the prediction stage.
+Train the Network:
 
-#### Real Estate Data
+1. My labeled data frame and numpy array data frame **joined** on 'filename'
 
-I obtained the public property data set from [Open Data Philly](https://www.opendataphilly.org/dataset/opa-property-assessments)
+2. I split my data in the following manner:
 
-I performed the following operations on the data set using [re_data.py](re_data.py)
+	80% Train, 20% Test
 
-## Visuals
+	The 80% Train data is then split 80%/20% train/validation during training.
 
-<img alt="Trees" src="images/practice_trees.png" height=350>
+3. The numpy arrays are **scaled** and formatted in the correct manner to feed into Keras.
+
+4. The information passes through the CNN and I am able to see the accuracy of the model against my validation set.
+
+5. After training, I test the model against my test data. If the accuracy of the model beats previous model accuracies, then the model is saved to used for the prediction stage.
+
+## Results
+
+#### The Numbers
+
+My data set contains approximately 15,000 images. Therefore the Network trained on  ~9,500 images, validated on ~2,500 images and tested on ~3,000 images.
+
+<p align=“center”>
+	<img alt="recall and precission" src="images/all.png" width=550>
+</p>
+
+<p align=“center”>
+	<img alt="recall and precission" src="images/recall.png" width=550>
+</p>
+
+The numbers are unequivocally disappointing.
+
+But **most important** is what the data and the trained network are telling me in order for me to **learn** and adjust the model moving forward.
+
+I decided to dig in a little deeper:
+
+**Recall** is not bad. I could give up on some recall in order to gain precision.
+
+<p align=“center”>
+	<img alt="labels" src="images/recall_edited.png" width=550>
+</p>
+
+What is going on with the **false positives** to drive the **precision** down?
+
+<p align=“center”>
+	<img alt="labels" src="images/labels_edited.png" width=550>
+</p>
+
+There are many **False Positives**. Lets see what these false positives are.
+
+#### The Visual
+
+Analysis:
+
+The model likes phone poles.
+<p align=“center”>
+	<img alt="labels" src="images/phone_pole.png" width=450>
+</p>
+
+The model is overfitting on trees that do not fit my criteria
+<p align=“center”>
+	<img alt="labels" src="images/tree.png" width=450>
+</p>
+
+Depth perception off
+<p align=“center”>
+	<img alt="labels" src="images/depth.png" width=450>
+</p>
+
+The model likes green
+<p align=“center”>
+	<img alt="labels" src="images/green_house.png" width=450>
+</p>
 
 
-## Real Estate Analysis
+## Next Steps
 
-### Model Architecture
+Depth perception is an issue for convolutional neural networks. [This article from Stanford discusses CNN's trouble with depth perception](http://cs231n.stanford.edu/reports/2017/pdfs/200.pdf)
 
-### Model Training
-
-### All together now
-
-## Convolutional Neural Network
-
-[....!!!brief history of neural network!!!......](https://en.wikipedia.org/wiki/Convolutional_neural_network)
-
-### Model Architecture
-
-### Model Training
-
-### Results
-
-
-
-
-
+Reevaluate my criteria for labeling

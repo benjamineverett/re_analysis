@@ -81,27 +81,33 @@ class Plot(object):
                     address of location for lat and lng
         '''
         green = '#228b22'
-        gray = '#0000FF' # blue
-        labels = [('tp',green,True,green,1),
-                    ('fp',green,True,gray,1),
-                    ('fn',gray,True,green,1),
-                    ('tn',gray,True,gray,1)]
+        blue = '#0000FF' # blue
+        red = '#8b2222'
+        gray = '#D3D3D3'
+
+        labels = [('tp',green,True,green,1,0.5),
+                    ('fp',red,True,red,1,0.5),
+                    ('fn',green,False,green,1,0.5)]
+                    # ('tn',gray,False,gray,1,0.1)
         for label in labels:
             labeled_points, points_count = self._get_labeled(dataframe=self.df_labeled,prediction=label[4],label=label[0])
             counter = 1
             for address in labeled_points:
-                lat_lng_address = '{}.jpg'.format(' '.join(address.split('.')[0].split('_')[:-1]).replace(' ','_'))
-                readable_address = ' '.join(address.split('_')[:-1])
-                print('Plotting {}\nThis is point {}/{} ~ Group {}'.format(readable_address,counter,points_count,label[0].upper()))
-                latitude, longitude = self._get_lat_and_lng(address=lat_lng_address)
+                if address.split('_')[-1][:-1] != 'flip':
+                    lat_lng_address = '{}.jpg'.format(' '.join(address.split('.')[0].split('_')[:-1]).replace(' ','_'))
+                    # lat_lng_address = '{}'.format(' '.join(address.split('.')[0].split('_')[:-1]).replace(' ','_'))
+                    readable_address = ' '.join(address.split('_')[:-1])
+                    print('Plotting {}\nThis is point {}/{} ~ Group {}'.format(readable_address,counter,points_count,label[0].upper()))
+                    latitude, longitude = self._get_lat_and_lng(address=lat_lng_address)
                 if latitude != 0:
                     ''' Credit to for excellent tutorial
                     http://nbviewer.jupyter.org/gist/ocefpaf/0ec5c93138744e5072847822818b4362
                     '''
                     if label [0] != 'tn':
-                        encoded = base64.b64encode(open('pics/labeled_resized/{}.jpg'.format(address), 'rb').read()).decode()
+                        encoded = base64.b64encode(open('pics/labeled_resized/{}'.format(address), 'rb').read()).decode()
+                        # encoded = base64.b64encode(open('pics/labeled_resized/{}.jpg'.format(address), 'rb').read()).decode()
                         html = '<img src="data:image/jpeg;base64,{}">'.format
-                        iframe = IFrame(html(encoded), width=200, height=400)
+                        iframe = IFrame(html(encoded), width=300, height=600)
                         popup = folium.Popup(iframe, max_width=1000)
                         folium.features.Circle(location=[latitude,longitude],
                                         radius=5,
@@ -110,7 +116,7 @@ class Plot(object):
                                         color=label[1],
                                         fill=label[2],
                                         fill_color=label[3],
-                                        fill_opacity = 0.5
+                                        fill_opacity = label[4]
                                         ).add_to(self.mappy)
                     else:
                         folium.features.Circle(location=[latitude,longitude],
@@ -130,8 +136,8 @@ class Plot(object):
         self.mappy.save(outfile=self.save_to)
 
     def _get_data(self):
-
-        return pd.read_pickle('data/meta_data.pkl'), pd.read_pickle('data/all_labels.pkl'), pd.read_pickle('data/all_predicted.pkl')
+        # return pd.read_pickle('data/meta_data.pkl'), pd.read_pickle('data/all_labels.pkl'), pd.read_pickle('data/all_predicted.pkl')
+        return pd.read_pickle('data/meta_data.pkl'), pd.read_pickle('data/predicted_test_pipeline.pkl'), pd.read_pickle('data/all_predicted.pkl')
 
     def _initialize_map(self,starting_loc_map,zoom):
         # create empty map for folium
@@ -270,7 +276,7 @@ class GSVMetaData(object):
 if __name__ == '__main__':
     btown = Plot(starting_loc_map=(39.967254, -75.172137),
                     zoom=16,
-                    html_save_to = 'labeled_small')
+                    html_save_to = 'predicted_on_test')
     btown.plot_point()
     # btown = Plot(starting_loc_map=(39.967254, -75.172137),
     #                 zoom=16,

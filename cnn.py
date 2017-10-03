@@ -227,6 +227,15 @@ class NeuralNetwork(object):
         print('Total time to run: {}'.format(int(end_time/60)))
         self.model.save('models/{}_{}'.format(round(score[1],4),day))
 
+    def output_predictions(self):
+        predicted = self.model.predict_classes(X_test)
+        df_predicted = self.df
+        df_predicted['predicted'] = predicted.tolist()
+        df_predicted = df_predicted.drop('np_array')
+        df_predicted.to_pickle('data/predicted_{}.pkl'.format(time.ctime().replace(' ','_')))
+
+
+
 
 if __name__ == '__main__':
     NN = NeuralNetwork()
@@ -236,7 +245,7 @@ if __name__ == '__main__':
 
     NN.train_test_split(X_col_name='np_array',
                         y_col_name='label',
-                        train_split=0.75)
+                        train_split=0.8)
 
     NN.set_parameters(random_seed=17,
                         batch_size=10,
@@ -248,4 +257,4 @@ if __name__ == '__main__':
                         kern_size = (3, 3),
                         colors=3)
     NN.run_models()
-    # plt.()
+    NN.
