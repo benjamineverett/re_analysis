@@ -16,7 +16,7 @@ Many thanks to the excellent documentation provided by [Keras](https://keras.io/
 
 Curb Appeal is my attempt to try to capture a small piece of one on-the ground factor affecting real estate prices.
 
-**Objective** Using a **convolutional neural network**, build an algorithm to **count** the **number of trees on a block**
+***Objective:*** **Using a convolutional neural network, build an algorithm to count the number of trees on a block**
 
 ## Table of Contents
 
