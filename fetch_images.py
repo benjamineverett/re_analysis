@@ -98,7 +98,6 @@ class FetchImages(object):
                                                         self.state,
                                                         self.zip_code)
 
-
     def set_payload(self,
                 pic_size='640x640',
                 address=None,
@@ -164,6 +163,10 @@ class FetchImages(object):
             RETURNS
             -------
                 Saves pictures to specified directory
+
+            NOTE TO SELF
+            ------------
+                Function too long, move blocks of code into other functions
         '''
 
         # create a list of blocks that do not have headings
@@ -206,6 +209,8 @@ class FetchImages(object):
         self._info_for_day(num_fetches=counter,overall_start_time=overall_start)
 
     def _get_bearing(self,heading,side_of_st,blk):
+        ''' Get the bearing for the block '''
+
         if side_of_st == 'right':
             even_pic = (heading + 90) % 360
             odd_pic = (heading + 270) % 360
@@ -222,6 +227,33 @@ class FetchImages(object):
             return 'I need a bearing'
 
     def _get_heading(self,blk_st,blk_end,block):
+        '''
+        -- Get heading of GSV car --
+
+            PARAMETERS
+            ----------
+
+                blk_st: int
+                    start of block -> e.g. 1400
+
+                blk_end: int
+                    end of the block -> e.g. 1500
+
+                block: str
+                    block name -> e.g 'n 26th st'
+            RETURNS
+            ------
+                heading: int
+                    returns heading of car in degrees
+                    used to set bearing of the camera in self.fetch_pictures()
+                    e.g. heading = 0 degrees -> pics taken at 90 degrees and 180 degrees
+
+            NOTE TO SELF
+            ------------
+                Function is to long, shorten in future
+                Function needs better notation
+        '''
+
         block_num_start = block + 1
         block_num_end = block + 100 - 1
 
@@ -262,6 +294,8 @@ class FetchImages(object):
         return bearing
 
     def _get_meta_data(self,address):
+        ''' Get lat and lng for address '''
+
         link = 'https://maps.googleapis.com/maps/api/streetview/metadata?parameters'
         payload = {'location':address,
                     'key':self.API}
@@ -298,11 +332,8 @@ class FetchImages(object):
     def _links(self,which_API):
         '''
         -- Sets API key and link for API --
-            Called in __init__ function
 
-            TODO
-            ----
-                Expand class to include other API calls
+            Called in __init__ function
 
             PARAMETERS
             ----------
@@ -313,6 +344,10 @@ class FetchImages(object):
             -------
                 API key from .bash_profile
                 Link for API
+
+            NOTE TO SELF
+            ------------
+                Expand class to include other API calls
         '''
 
         if which_API == 'GSV':
@@ -323,6 +358,13 @@ class FetchImages(object):
             return "I don't have that API"
 
     def _set_blocks(self):
+        ''' -- Set the blocks GSV will fetch from  --
+
+            NOTE TO SELF
+            ------------
+                function needs better notation
+        '''
+
         blocks = {}
 
         if self.house_nums[0] > 99:
@@ -418,6 +460,7 @@ class FetchImages(object):
     def _check_for_repeats(self):
         '''
         -- Checks if picture is a repeat of last picture --
+
             Called in _save_pic function
 
             PARAMETERS
@@ -437,6 +480,7 @@ class FetchImages(object):
     def _save_file(self,name):
         '''
         -- Saves file to hard drive ---
+
             Called in _save_pic function
 
             PARAMETERS
@@ -452,7 +496,6 @@ class FetchImages(object):
 
         with open("{}/{}.jpg".format(self.directory,name), 'wb') as f:
             f.write(self.response.content)
-
 
     def _fetches_for_day(self,
                         num_fetches,
