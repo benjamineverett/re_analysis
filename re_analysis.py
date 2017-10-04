@@ -9,7 +9,8 @@ from sklearn.preprocessing import normalize
 from sklearn.metrics import mean_squared_error, r2_score
 
 '''
-NOT A WORKING MODEL
+----- !!!!!! ---------- NOT A WORKING MODEL ---------- !!!!! -----
+
 Code herein contains scraps of beginnings to analyze Philly real estate data
 '''
 
