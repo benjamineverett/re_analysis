@@ -74,12 +74,11 @@ def resize_pics():
         resize.resize_pics()
 
 
-
-
 ''' ---------------- Code for TRAINING neural network ---------------'''
-''' Use cnn.py for tweaking neural network and running, use this function when model is
-returning results that should run through the pipeline
-'''
+
+    ''' Use cnn.py for tweaking neural network and running, use this function when model is
+    returning results that should run through the pipeline
+    '''
 def run_NN():
     from cnn import NeuralNetwork
     NN = NeuralNetwork()

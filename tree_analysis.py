@@ -14,19 +14,19 @@ class TreeData(object):
 
 
     def precision(self,dataframe):
-        ''' Get PRECISION '''
+        ''' -- Get PRECISION -- '''
         precision = dataframe.tp.sum() / (dataframe.tp.sum()+dataframe.fp.sum())
         self._print_statement('precision', precision)
         return precision
 
     def recall(self,dataframe):
-        ''' Get RECALL '''
+        ''' -- Get RECALL -- '''
         recall = dataframe.tp.sum() / (dataframe.tp.sum() + dataframe.fn.sum())
         self._print_statement('recall',recall)
         return recall
 
     def specificity(self,dataframe):
-        '''Get SPECIFICITY '''
+        ''' -- Get SPECIFICITY -- '''
         specificity = dataframe.tn.sum() / (dataframe.tn.sum() + dataframe.fp.sum())
         self._print_statement('specificity',specificity)
 

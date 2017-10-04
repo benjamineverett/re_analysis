@@ -1,27 +1,52 @@
 import numpy as np
 import os
 
+'''
+-- Get random blocks for Labeler class --
+
+    File contains two classes:
+        BlockCreator and Randomizer
+
+        BlockCreator parent to Randomizer
+
+        Randomizer is called from label_pics.py
+        Randomizer parent to Labeler
+'''
+
 class BlockCreator(object):
+    '''
+
+    -- Creates dictionary of all blocks in a neighborhood --
+
+        NOTE TO SELF
+        ------------
+            Create better documentation
+
+    '''
 
     def __init__(self,neighborhood):
         self.dict = self._read_dict(neighborhood)
         self.neighborhood = neighborhood
 
     def _read_dict(self,neighborhood):
+        # open neighborhood file and read
         with open('data/{}.txt'.format(neighborhood),'r') as f:
             return eval(f.read())
 
     def get_blocks(self):
+        # get list of blocks
         blk_dict = self._get_dict()
         self.blocks = self._create_blocks(dct = blk_dict)
 
     def _get_dict(self):
-        # get dict of blocks
+        # get dict of neighborhood with street names and block ranges
         blocks = self.dict[self.neighborhood]['n_s']
         blocks.update(self.dict[self.neighborhood]['e_w'])
         return blocks
 
     def _create_blocks(self,dct):
+        # create list that contains street name and block number
+        # e.g. ('master st', 1800)
         blocks = []
         for street in dct.keys():
             current_block = dct[street][0]
@@ -32,11 +57,20 @@ class BlockCreator(object):
         return blocks
 
     def sanity_check(self):
+        # fail safe double check
         print(self.dict)
         print('\n\n')
         print(self.blocks)
 
 class Randomizer(BlockCreator):
+
+    '''
+    -- Randomly fetch blocks from list created in BlockCreator --
+
+    NOTE TO SELF
+    ------------
+        Add better documentation throughout
+    '''
 
     def __init__(self,neighborhood,num_pics):
         super(Randomizer, self).__init__(neighborhood)
