@@ -14,9 +14,11 @@ Many thanks to the excellent documentation provided by [Keras](https://keras.io/
 
 ## Objective
 
+**Driving Question:** Do the number of trees on a block affect real estate prices?
+
 Curb Appeal is my attempt to capture **one small piece** of the on-the ground factors affecting real estate prices.
 
-###Objective: **Using a convolutional neural network, build an algorithm to count the number of trees on a block**
+***Objective:*** **Using a convolutional neural network, build an algorithm to count the number of trees on a block**
 
 ## Table of Contents
 
