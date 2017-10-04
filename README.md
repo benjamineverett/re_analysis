@@ -35,6 +35,8 @@ Curb Appeal is my attempt to try to capture a small piece of an on-the ground fa
 
 3. [Next Steps](#next-steps)
 
+4. [Sources](#sources)
+
 
 
 ## Dataset: Collection, Preprocessing and Creation
@@ -242,11 +244,21 @@ The model likes green
 **Unbalanced data**
 My data consists of ~15,000 images, of which ~2,250 are labeled as 'TREE' or approximately an 85%/15% imbalance. I knew that given the small amount of images and imbalanced nature of my data, predicting on the test set would be a challenge. I adjusted the weights within my model to account for this imbalance, however, balanced data would still be best.
 
-**Depth Perception**
+**Depth perception**
 Depth perception can be an issue for convolutional neural networks. [This article from Stanford discusses CNN's trouble with depth perception](http://cs231n.stanford.edu/reports/2017/pdfs/200.pdf)
 
-**Good Criteria?**
+**Good criteria?**
 I chose very stringent criteria for my model. The goal is to use my model as a feature in real estate price predictions. With this in mind, does being able to see a tree down the block or in the distance affect an individual's purchase decision? If I constructed my model around this hypothesis I'd have a more precise feature to pass into my real estate prediction model and be able to test its' validity.
 
 **Increase complexity of Neural Network**
 In my quest to provide a proof of concept, I chose to keep the neural network very simple and to live with the results. I could reasonably expect my network to improve with greater depth.
+
+**Larger images**
+My actual images size is 100x50
+<p align=“center”>
+ <img alt="Original Picture" src="images/107_morris_st_philadelphia_pa_19147_pic1.jpg" width=50>
+</p>
+
+## Sources
+
+[A list of helpful articles](https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html)

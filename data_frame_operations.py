@@ -5,6 +5,11 @@ class DFOps(object):
     def __init__(self,filepath_to_df):
         self.df = self._get_df(filepath=filepath_to_df)
 
+    def perform_all_ops(self):
+        self.drops()
+        self.create_results()
+        self.add_zip()
+        
     def _get_df(self,filepath):
         return pd.read_pickle(filepath)
 

@@ -10,6 +10,9 @@ from keras.callbacks import TensorBoard
 import time
 import matplotlib.pyplot as plt
 from keras.models import load_model
+from data_frame_operations import DFOps
+from tree_analysis import TreeData
+
 
 '''
 Much credit to Keras, their excellent documentation and thorough tutorials
@@ -165,8 +168,8 @@ class NeuralNetwork(object):
         X_test = self.X_test.astype('float32')
         self.test_array = self.test_array.astype('float32')
         # normalize
-        X_train /= 255
-        X_test /= 255
+        self.X_train_norm = X_train / 255
+        self.X_test_norm = X_test / 255
         self.test_array /= 255
         # convert class vectors to binary class matrices
         Y_train = np_utils.to_categorical(self.y_train, self.nb_classes)
@@ -212,27 +215,29 @@ class NeuralNetwork(object):
                                 write_images=True,
                                 embeddings_metadata=True)
 
-        # self.model.fit(X_train, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
-        #           verbose=1, validation_data=(X_test, Y_test),callbacks=[tbCallBack],
+        # self.model.fit(self.X_train_norm, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
+        #           verbose=1, validation_data=(self.X_test_norm, Y_test),callbacks=[tbCallBack],
         #           class_weight='auto')
 
-        self.model.fit(X_train, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
+        self.model.fit(self.X_train_norm, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
                   verbose=1, validation_split=0.2,callbacks=[tbCallBack],
                   class_weight='auto')
-        score = self.model.evaluate(X_test, Y_test, verbose=0)
+        self.score = self.model.evaluate(self.X_test_norm, Y_test, verbose=0)
         end_time = time.time()-start
         day = time.ctime().lower().replace(' ','_')
-        print('Test score:', score[0])
-        print('Test accuracy:', score[1])
+        print('Test score:', self.score[0])
+        print('Test accuracy:', self.score[1])
         print('Total time to run: {}'.format(int(end_time/60)))
-        self.model.save('models/{}_{}'.format(round(score[1],4),day))
+        self.model.save('models/{}_{}'.format(round(self.score[1],4),day))
 
     def output_predictions(self):
-        predicted = self.model.predict_classes(X_test)
-        df_predicted = self.df
-        df_predicted['predicted'] = predicted.tolist()
-        df_predicted = df_predicted.drop('np_array')
-        df_predicted.to_pickle('data/predicted_{}.pkl'.format(time.ctime().replace(' ','_')))
+        predicted = self.model.predict_classes(self.X_test_norm)
+        predicted = predicted.tolist()
+        df_predicted = self.X_test_all
+        df_predicted['predicted'] = predicted
+        self.df_predicted = df_predicted.drop('np_array',axis=1)
+        self.filename = 'data/predicted_{}.pkl'.format(time.ctime().replace(' ','_'))
+        df_predicted.to_pickle('{}'.format(self.filename))
 
 if __name__ == '__main__':
     NN = NeuralNetwork()
@@ -253,5 +258,13 @@ if __name__ == '__main__':
                         pool = (3, 3),
                         kern_size = (3, 3),
                         colors=3)
+
+
     NN.run_models()
-    NN.
+    NN.output_predictions()
+    data = DFOps(filepath_to_df=NN.filename)
+    data.perform_all_ops()
+    data.df.to_pickle('test')
+    trees = TreeData('test','data/labeled_edited.pkl')
+    trees.get_all()
+    print(trees.tfRMSE())

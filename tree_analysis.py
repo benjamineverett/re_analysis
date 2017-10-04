@@ -2,16 +2,16 @@ import pandas as pd
 
 class TreeData(object):
 
-    def __init__(self,filepath_to_df):
-        self.df = self._get_df(filepath=filepath_to_df)
+    def __init__(self,filepath_to_df,filepath_to_labeled):
+        self.df, self.df_all_labeled = self._get_df(filepath=filepath_to_df,filepath_all_labeled=filepath_to_labeled)
 
-    def _get_df(self,filepath):
-        return pd.read_pickle(filepath)
+
+    def _get_df(self,filepath,filepath_all_labeled):
+        return pd.read_pickle(filepath), pd.read_pickle(filepath_all_labeled)
 
     def get_all(self):
-        self.precision(self.df)
-        self.recall(self.df)
-        self.specificity(self.df)
+        self.precision(self.df), self.recall(self.df)
+
 
     def precision(self,dataframe):
         ''' Get PRECISION '''
@@ -50,8 +50,8 @@ class TreeData(object):
             for row in df.iterrows():
                 precision,recall = self._precision_recall(row=row)
             #zip_code,precision,recall,rmse
-            info.append([zippy_code,precision,recall,MSE,RMSE])
-        self.metric_by_zip = pd.DataFrame(info,columns=['zip_code','precision','recall','mse','rmse'])
+            info.append([zippy_code,precision,recall,RMSE])
+        self.metric_by_zip = pd.DataFrame(info,columns=['zip_code','precision','recall', 'rmse'])
 
     def metric_by_block(self):
         info = []
@@ -86,12 +86,24 @@ class TreeData(object):
         n = self.df[self.df.zip_code == zippy_code].shape[0]
         mean = self.df[self.df.zip_code == zippy_code].label.mean()
 
+    def avg_trees_per_block(self):
+        df = self.df.groupby('block', as_index=False).sum()
+        return round((df.label.sum() / df.shape[0]),1)
+
+    def all_data_avg_trees_per_block(self):
+        df = self.df_all_labeled.groupby('block', as_index=False).sum()
+        return round((df.label.sum() / df.shape[0]),1)
 
 
-
-
-
-
+    def tfRMSE(self):
+        df = self.df.groupby('block', as_index=False).sum()
+        tree_factor = df.label.sum()
+        squares = []
+        for row in df.iterrows():
+            tree_factor_residual = ((row[1].predicted - row[1].label)**2)*(row[1].label/tree_factor)
+            squares.append(tree_factor_residual)
+        tfRMSE = sum(squares)**(1/2)
+        return tfRMSE
 
 if __name__ == '__main__':
     trees = TreeData('data/predicted_test_pipeline.pkl')
