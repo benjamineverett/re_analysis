@@ -5,22 +5,18 @@ In a past life I was a real estate broker. As a broker, I noticed that real esta
 
 I listened to a podcast about a year and a half ago regarding two data scientists that trained an algorithm to identify year, make and model of vehicles on the street via Google Street View. [They were able to use this information to very accurately predict election results](images/pnas.pdf).
 
-Fundamentally, real estate is local and grounded in the physical space directly viewable to the human eye. In Philadelphia, being a very provincal city, this is even more the case than many cities. Antedotally, I bought a house 4 blocks away from a friend. My house cost 5 times less. It is difficult for a big picture algorithm to take into account the small details of the literal, on the ground, built envirnoment that buyers take into account when purchasing real estate.
-
-[Impetus for project: Estimate demographic makeup of US using GSV and machine learning](http://ai.stanford.edu/~tgebru/papers/pnas.pdf)
-
-Many thanks to the excellent [stackoverflow community](https://stackoverflow.com/).
+Fundamentally, real estate is local and grounded in the physical space directly viewable to the human eye. In Philadelphia, being a very provincial city, this is even more the case than many cities. Anecdotally, I bought a house 4 blocks away from a friend. My house cost 5 times less. It is difficult for a big picture algorithm to take into account the small details of the literal, on the ground, built environment that buyers take into account when purchasing real estate.
 
 # Curb appeal
 
 
 ## Objective
 
-**Driving Question:** Do the number of trees on a block affect real estate prices?
-
 Curb Appeal is my attempt to capture **one small piece** of the on-the ground factors affecting real estate prices.
 
-***Objective:*** **Using a convolutional neural network, build an algorithm to count the number of trees on a block**
+**Driving Question:** Do the number of trees on a block affect real estate prices?
+
+**Objective:** **Using a convolutional neural network, build an algorithm to count the number of trees on a block**
 
 ## Table of Contents
 
@@ -273,3 +269,5 @@ My actual images size is 100x50
 [A list of helpful articles](https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html)
 
 [Machine learning for everyone](https://www.youtube.com/watch?v=mWl45NkFBOc&feature=youtu.be)
+
+[Many thanks to the excellent stackoverflow community](https://stackoverflow.com/)
