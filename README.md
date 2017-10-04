@@ -11,11 +11,12 @@ Many thanks to the excellent documentation provided by [Keras](https://keras.io/
 
 # Curb appeal
 
+
 ## Objective
 
-Curb Appeal is my attempt to try to capture a small piece of an on-the ground factor affecting real estate prices.
+Curb Appeal is my attempt to try to capture a small piece of one on-the ground factor affecting real estate prices.
 
-1 - Using a **convolutional neural network**, build an algorithm to **count** the **number of trees on a block**
+**Objective** Using a **convolutional neural network**, build an algorithm to **count** the **number of trees on a block**
 
 ## Table of Contents
 
@@ -30,7 +31,7 @@ Curb Appeal is my attempt to try to capture a small piece of an on-the ground fa
 2. [Results](#results)
 
 	* [The Numbers](#the-numbers)
-	* [The Visuals](#the-visual)
+	* [The Visuals](#the-visuals)
 	* [The Output](#the-output)
 
 3. [Next Steps](#next-steps)
@@ -213,7 +214,7 @@ What is going on with the **false positives** to drive the **precision** down?
 
 There are many **False Positives**. Lets see what these false positives are.
 
-#### The Visual
+#### The Visuals
 
 Analysis:
 
@@ -261,4 +262,8 @@ My actual images size is 100x50
 
 ## Sources
 
+[Impetus for project: Estimate demographic makeup of US using GSV and machine learning](http://ai.stanford.edu/~tgebru/papers/pnas.pdf)
+
 [A list of helpful articles](https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html)
+
+[Machine learning for everyone](https://www.youtube.com/watch?v=mWl45NkFBOc&feature=youtu.be)
