@@ -7,7 +7,9 @@ I listened to a podcast about a year and a half ago regarding two data scientist
 
 Fundamentally, real estate is local and grounded in the physical space directly viewable to the human eye. In Philadelphia, being a very provincal city, this is even more the case than many cities. Antedotally, I bought a house 4 blocks away from a friend. My house cost 5 times less. It is difficult for a big picture algorithm to take into account the small details of the literal, on the ground, built envirnoment that buyers take into account when purchasing real estate.
 
-Many thanks to the excellent documentation provided by [Keras](https://keras.io/),  and OF COURSE the [stackoverflow community](https://stackoverflow.com/).
+[Impetus for project: Estimate demographic makeup of US using GSV and machine learning](http://ai.stanford.edu/~tgebru/papers/pnas.pdf)
+
+Many thanks to the excellent [stackoverflow community](https://stackoverflow.com/).
 
 # Curb appeal
 
@@ -265,6 +267,8 @@ My actual images size is 100x50
 ## Sources
 
 [Impetus for project: Estimate demographic makeup of US using GSV and machine learning](http://ai.stanford.edu/~tgebru/papers/pnas.pdf)
+
+[Keras](https://keras.io/)
 
 [A list of helpful articles](https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html)
 
