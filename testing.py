@@ -1,3 +1,6 @@
+'''
+ONLY used to test snippets of code 
+
 house_nums = (1200,1500)
 blocks = {}
 

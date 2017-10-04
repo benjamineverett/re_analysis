@@ -13,16 +13,19 @@ from block_creator import Randomizer
 
 class Labeler(Randomizer):
     '''
-    Labeler will:
-        1) Fetch files from specified folder and display
-        the pictures on screen for labeling
+    Labeler, a summary:
 
-        2) Save files to new folder for accurate record keeping
-        and to resize later
+        1) Labeler inherits from Randomizer
+            Randomizer chooses blocks at random from specified
+                neighborhood and does bookkeeping
 
-        3) Create panda's data frame containing filename, label
+        2) Fetch files from neighborhood up to specified number of pics
 
-        On mac:
+        3) Label pics and save
+
+        4) Create panda's data frame containing filename, label
+
+        To label pics, on mac:
             Fn + left arrow key = 0
             Fn + right arrow key = 1
     '''
@@ -37,9 +40,11 @@ class Labeler(Randomizer):
         PARAMETERS
         ----------
             neighborhood: str
-                name of text file to fetch
-            labeled_pics_folder_path: str
-                file path of folder to save label pics to
+                name of file where pics are stored
+            num_pics: int
+                specify number of pics to pull from neighborhood
+            zip_code: int
+                specify zip code of neighborhood
         '''
         #Randomizer.__init__(neighborhood,num_pics)
         super(Labeler,self).__init__(neighborhood,num_pics)

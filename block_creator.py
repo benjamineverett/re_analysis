@@ -2,6 +2,7 @@ import numpy as np
 import os
 
 class BlockCreator(object):
+
     def __init__(self,neighborhood):
         self.dict = self._read_dict(neighborhood)
         self.neighborhood = neighborhood
@@ -79,10 +80,8 @@ class Randomizer(BlockCreator):
             blocks.append((block,num))
         return blocks
 
-
     def _get_addresses(self,block):
         return {'{} {} philadelphia pa'.format(num,block[0]) for num in range(block[1],block[1]+100)}
-
 
 if __name__ == '__main__':
     # fairmount = BlockCreator('fairmount')
