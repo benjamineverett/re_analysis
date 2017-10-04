@@ -404,52 +404,8 @@ class Resizer(object):
     ''' --------------- END HIDDEN METHODS --------------- '''
 
 if __name__ == '__main__':
-    # fairmount = Labeler('fairmount',800,19130)
-    # fairmount.label_pics()
-    # resize = Resizer(num_pixels=50)
-    # resize.resize_pics()
-    # brewerytown = Labeler('brewerytown',900,19121)
-    # brewerytown.label_pics()
-    # resize = Resizer(num_pixels=50)
-    # resize.resize_pics()
-    # pennsport = Labeler('pennsport',900,19147)
-    # pennsport.label_pics()
+
     # resize = Resizer(num_pixels=50)
     # resize.resize_pics()
     # west_philly_north = Labeler('west_philly_north',250,19143)
     # west_philly_north.label_pics()
-    # resize = Resizer(filepath='pics/labeled',
-    #                 num_pixels=50,
-    #                 resized_file_path='pics/resized',
-    #                 move=True,
-    #                 df_filepath='data/resized.pkl',
-    #                 df_backup_filepath='data/backups',
-    #                 df_backup_name='backup_resized'
-    #                 )
-    # resize.resize_pics()
-    for neighborhood in ['brewerytown','fairmount','newbold','pennsport','west_philly_north']:
-        resize = Resizer(filepath='pics/{}'.format(neighborhood),
-                        num_pixels=50,
-                        resized_file_path='pics/resized',
-                        move=False,
-                        df_filepath='data/all_resized.pkl',
-                        df_backup_filepath='data/backups',
-                        df_backup_name='backup_all_resized'
-                        )
-        resize.resize_pics()
-
-
-
-#
-#
-#
-#
-# def _create_list_files(self):
-#     '''
-#     -- Creates attribute containing list of files in directory --
-#
-#         RETURNS
-#         -----------
-#         list of files from specified directory
-#     '''
-#     return [os.fsdecode(file) for file in os.listdir(self.folder_path)]

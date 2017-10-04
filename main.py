@@ -47,26 +47,31 @@ def test_pics_for_small_sample(street_name,zip_code,blk_st,blk_end,even_heading)
 
 ''' -----------------  Code for LABELING pics  ----------------- '''
 
-def label_pics(file_path_to_label,file_path_of_labeled):
+def label_pics():
     from label_pics import Labeler
-    instantiated_class = Labeler(file_path_to_label,file_path_of_labeled)
-    instantiated_class.label_pics('labeled')
+    fairmount = Labeler('fairmount',800,19130)
+    fairmount.label_pics()
 
-def resize_labeled_pics(filepath_to_resize,
-                    filepath_store_resized,
-                    num_pixels,
-                    show_resized_pic=False):
-    from label_pics import Resizer
-    instantiated_class = Resizer(filepath=filepath_to_resize,
-                                    resized_file_path=filepath_store_resized,
-                                    num_pixels=num_pixels,
-                                    show_resized_pic=show_resized_pic)
-
-    instantiated_class.resize_pics(to_np_array=True)
+    brewerytown = Labeler('brewerytown',900,19121)
+    brewerytown.label_pics()
+    resize = Resizer(num_pixels=50)
+    resize.resize_pics()
+    pennsport = Labeler('pennsport',900,19147)
+    pennsport.label_pics()
 
 ''' --------------- Code for RESIZING pics --------------- '''
-
 from fetch_images import Resizer
+def resize_pics():
+    for neighborhood in ['brewerytown','fairmount','newbold','pennsport','west_philly_north']:
+        resize = Resizer(filepath='pics/{}'.format(neighborhood),
+                        num_pixels=50,
+                        resized_file_path='pics/resized',
+                        move=False,
+                        df_filepath='data/all_resized.pkl',
+                        df_backup_filepath='data/backups',
+                        df_backup_name='backup_all_resized'
+                        )
+        resize.resize_pics()
 
 
 
@@ -113,7 +118,7 @@ def run_NN():
 ''' ---------------- IF NAME MAIN --------------- '''
 
 if __name__ == '__main__':
-    get_them_pics('west_philly_north',19143)
+    # get_them_pics('west_philly_north',19143)
     # get_them_pics('fairmount',19130)
     # get_them_pics('brewerytown',19121)
     # get_them_pics('newbold',19145)
@@ -132,3 +137,5 @@ if __name__ == '__main__':
     #                             blk_st=1800,
     #                             blk_end=2300,
     #                             even_heading='left')
+
+    # resize_pics()
