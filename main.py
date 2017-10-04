@@ -64,6 +64,11 @@ def resize_labeled_pics(filepath_to_resize,
 
     instantiated_class.resize_pics(to_np_array=True)
 
+''' --------------- Code for RESIZING pics --------------- '''
+
+from fetch_images import Resizer
+
+
 ''' ---------------- Code for TRAINING neural network ---------------'''
 ''' Use cnn.py for tweaking neural network and running, use this function when model is
 returning results that should run through the pipeline

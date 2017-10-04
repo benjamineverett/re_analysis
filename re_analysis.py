@@ -8,6 +8,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import normalize
 from sklearn.metrics import mean_squared_error, r2_score
 
+'''
+NOT A WORKING MODEL
+Code herein contains scraps of beginnings to analyze Philly real estate data
+'''
+
 class Models(object):
     '''
     Models analyzes real estate data using specified models
@@ -26,9 +31,6 @@ class Models(object):
         '''
         self.model_type = model_type
         self._initialize(filename)
-
-
-
 
     def _initialize(self,filename):
         '''

@@ -47,24 +47,14 @@ class Labeler(Randomizer):
         # set zip code
         self.zip_code = zip_code
 
-    def _initializer(self,neighborhood):
-        # Initializes self.pics_to_label
-        self.get_random_pics()
-        # get count of number of files in folder
-        self.file_count = len(self.pics_to_label)
-        # set folder path
-        self.folder_path = 'pics/{}'.format(neighborhood)
-        # set labeled pics folder path
-        self.labeled_pics_folder_path = 'pics/labeled'.format(neighborhood)
-
     def label_pics(self):
         '''
         -- Main block to run code for labeling --
 
             PARAMETERS
             ----------
-                labeled_pic_filepath: str
-                    specify name of file to save labeled data as
+
+                NONE: uses all self initialized in self._initializer()
 
             RETURNS
             -------
@@ -73,7 +63,6 @@ class Labeler(Randomizer):
         pic_counter = 1
         list_of_labels = []
         for pict in self.pics_to_label:
-            # pdb.set_trace()
             # get pictures
             pic1, pic2, flip1, flip2 = self._create_all_pics(p=pict[0])
             # loop through pics and enumerate for filenaming purposes
@@ -99,7 +88,20 @@ class Labeler(Randomizer):
 
     ''' --------------- BEGIN HIDDEN METHODS --------------- '''
 
+    def _initializer(self,neighborhood):
+        ''' Run these functions to load class '''
+        # Initializes self.pics_to_label
+        self.get_random_pics()
+        # get count of number of files in folder
+        self.file_count = len(self.pics_to_label)
+        # set folder path
+        self.folder_path = 'pics/{}'.format(neighborhood)
+        # set labeled pics folder path
+        self.labeled_pics_folder_path = 'pics/labeled'.format(neighborhood)
+
     def _save_labeled_blocks(self):
+        ''' Save sampled block to text so it is not used again '''
+
         with open('data/sampled_blocks.txt','a') as f:
             for block in self.labeled_blocks:
                  f.write('{},\n'.format(block))
@@ -146,9 +148,12 @@ class Labeler(Randomizer):
                 counter: int
                     count of number of pics labeled
 
+                address: str
+                    address in readable formate for display purposes
+
             INSTANTIATED
             ------------
-                self.label:bool value
+                self.label: bool value
                     used to append to list of lists for panda's data frame
         '''
 
@@ -172,13 +177,14 @@ class Labeler(Randomizer):
             self.label = 0
 
     def _save_labels(self,labeled_pics):
-        # check if dataframe exists, if not, create new dataframe
+        # check if data frame exists, if not, create new data frame
         if os.path.isfile('data/labeled.pkl'):
             old_df = pd.read_pickle('data/labeled.pkl')
             # save old df as backup
             old_df.to_pickle('data/backups/backup_labeled_old_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
             self.df = pd.DataFrame(labeled_pics,columns=['filename', 'label','block'])
             self.df.to_pickle('data/backups/backup_labeled_new_{}.pkl'.format(time.ctime().lower().replace(' ','_')))
+            # create updated data frame
             new_df = old_df.append(self.df)
             new_df.reset_index(inplace=True,drop=True)
             new_df.to_pickle('data/labeled.pkl')
@@ -196,19 +202,34 @@ class Resizer(object):
         ----------
             filepath: str
                 filepath to folder where images to resize reside
-            resized_file_path: str
-                filepath to folder to place resized images
-            dataframe_name: str
-                files saved into panadas datframe as filename, np.array
-                specify name to give to data frame
+
             num_pixels: int
                 number of pixels to scale larger height to
                     note: perspective maintained
                 e.g. original image = 600x300
                         num_pixels = 100 -> rescaled image 100x50
+
+            resized_file_path: str
+                filepath to folder to place resized images
+
+            move: bool
+                whether to move files to new folder after resizing
+
+            df_filepath: str
+                files saved into panadas data frame as filename, np.array
+                specify filepath to save data frame to
+                new data frame will be created if none exists in filepath
+
+            df_backup_filepath: str
+                specify filepath to save backup data frame to
+                all data frames are saved as a backup before merging as fail safe
+
+            df_backup_name: str
+                specify name for backup data frame
+
             show_resized_pic: bool
                 default = False
-                display resized photos at end
+                    display resized photos at end of resizing
     '''
 
     def __init__(self,
@@ -238,7 +259,7 @@ class Resizer(object):
                 to_np_array: bool
                     default = True
                     if False -> resize and save pics only
-                    if True -> resize pics and save in dataframe as numpy array
+                    if True -> resize pics and save in data frame as numpy array
             RETURNS
             -------
                 if to_np_array = True:
@@ -260,13 +281,13 @@ class Resizer(object):
             if picture == '.DS_Store':
                 pass
             else:
-                # give a little feedback, make us feel like the computer is working
+                # give a little feedback, make me feel like the computer is working
                 print('Resizing {}. Picture {} of {}'.format(picture,counter,len(files)))
                 # resize picture
                 pic1, pic2 = self._resize_pic(picture)
                 # if True, show picture
                 if self.show_resized_pic:
-                    self._show_pic()
+                    self._show_pic(picture)
                 # write picture to file
                 for i, half_pic in enumerate([pic1,pic2]):
                     cv2.imwrite('{}/{}_pic{}.jpg'.format(self.resized_file_path,picture.split('.')[0],i+1),half_pic)
@@ -277,12 +298,15 @@ class Resizer(object):
                         #np.array(cv2.imread('{}/{}_pic{}'.format(self.resized_file_path,picture,i)))])
                         if counter % 1000 == 0:
                             if to_np_array:
+                                # give me some feed back that everything is working
                                 print('\n-------------------- SAVING DATA ---------------------\n')
                                 self._save_df(data=array)
+                                # reset to empty array after saving
                                 array=[]
-        # append list to dataframe
+        # append list to data frame
         if to_np_array:
             self._save_df(data=array)
+
         if self.move:
             for picture in files:
                 print('Moving {}'.format(picture))
@@ -321,6 +345,10 @@ class Resizer(object):
         '''
         -- Method to show picture on the screen --- '
 
+            PARAMETERS
+            ----------
+                pic: numpy array
+
             RETURNS
             -------
                 show resized picture on screen
@@ -336,14 +364,15 @@ class Resizer(object):
 
             PARAMETERS
             ----------
-                Called if to_np_array = True
+                IF to_np_array = True
+
                 data: list of lists -> [['filename1.jpg',np.array],['filename2.jpg',np.array]]
 
             RETURNS
             -------
                 Saves data as pickled panda's data frame
         '''
-        # check if dataframe exists, if not, create new dataframe
+        # check if data frame exists, if not, create new data frame
         if os.path.isfile(self.df_filepath):
             # read and save old df
             old_df = pd.read_pickle(self.df_filepath)
