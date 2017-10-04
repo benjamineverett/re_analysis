@@ -30,7 +30,7 @@ Curb Appeal is my attempt to try to capture a small piece of an on-the ground fa
 2. [Results](#results)
 
 	* [The Numbers](#the-numbers)
-	* [The Visuals](#the visuals)
+	* [The Visuals](#the visual)
 	* [The Output](#the-output)
 
 3. [Next Steps](#next-steps)
