@@ -19,7 +19,6 @@ Much credit to Keras, their excellent documentation and thorough tutorials
 ----- https://keras.io/getting-started/sequential-model-guide/ -----
 '''
 
-
 class NeuralNetwork(object):
     '''
     This class will train neural network on image data
@@ -92,20 +91,20 @@ class NeuralNetwork(object):
                     array of labels to test on
         '''
 
-        # set X and convert to array
-        # X = self.df[X_col_name]
+        # set X
         X = self.df
-
         # set y
         y = self.df[y_col_name]
 
         # split into train,test data
+        # keep data frame with all columns preserved for joining later
         msk = np.random.rand(X.shape[0]) > train_split
         self.X_train_all = X[~msk]
         self.X_test_all = X[msk]
         self.y_train = y[~msk]
         self.y_test = y[msk]
 
+        # pull out np_array's from data frame
         self.X_train = np.array(list(self.X_train_all[X_col_name].values))
         self.X_test = np.array(list(self.X_test_all[X_col_name].values))
 
@@ -160,41 +159,40 @@ class NeuralNetwork(object):
             This method will need to be HARD CODED to edit model for training
 
             See below for step by step process
-
         '''
         start = time.time()
         # get data into correct format
         X_train = self.X_train.astype('float32')
         X_test = self.X_test.astype('float32')
-        self.test_array = self.test_array.astype('float32')
+
         # normalize
         self.X_train_norm = X_train / 255
         self.X_test_norm = X_test / 255
-        self.test_array /= 255
+
         # convert class vectors to binary class matrices
         Y_train = np_utils.to_categorical(self.y_train, self.nb_classes)
         Y_test = np_utils.to_categorical(self.y_test, self.nb_classes)
+
         # set model
         self.model = Sequential()
-        # 2 convolutional layers followed by a pooling layer followed by dropout
 
+        # 2 convolutional layers, followed by a pooling layer, followed by dropout, followed by classification
         ''' -- Layer 1 -- '''
         self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
                                 border_mode='valid',
                                 input_shape=self.input_shape))
         self.model.add(Activation('tanh'))
-        # self.model.add(Dropout(0.25))
 
         ''' -- Layer 2 -- '''
         self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
                                 border_mode='valid',
                                 input_shape=self.input_shape))
         self.model.add(Activation('tanh'))
-        # self.model.add(Dropout(0.25))
 
         ''' -- Layer 3 -- '''
         self.model.add(MaxPooling2D(pool_size=self.pool_size))
         self.model.add(Dropout(0.25))
+
         # transition to an mlp
         self.model.add(Flatten())
         self.model.add(Dense(25))
@@ -204,7 +202,6 @@ class NeuralNetwork(object):
 
         ''' -- Classification -- '''
         self.model.add(Activation('softmax'))
-        #compile(self, optimizer, loss, metrics=None, sample_weight_mode=None, weighted_metrics=None)
         self.model.compile(loss='categorical_crossentropy',
                       optimizer='adam',
                       metrics=['accuracy'])
@@ -215,27 +212,32 @@ class NeuralNetwork(object):
                                 write_images=True,
                                 embeddings_metadata=True)
 
-        # self.model.fit(self.X_train_norm, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
-        #           verbose=1, validation_data=(self.X_test_norm, Y_test),callbacks=[tbCallBack],
-        #           class_weight='auto')
-
         self.model.fit(self.X_train_norm, Y_train, batch_size=self.batch_size, epochs=self.nb_epoch,
                   verbose=1, validation_split=0.2,callbacks=[tbCallBack],
                   class_weight='auto')
+        # score model
         self.score = self.model.evaluate(self.X_test_norm, Y_test, verbose=0)
         end_time = time.time()-start
-        day = time.ctime().lower().replace(' ','_')
         print('Test score:', self.score[0])
         print('Test accuracy:', self.score[1])
         print('Total time to run: {}'.format(int(end_time/60)))
+
+        # save model with accuracty and time
+        day = time.ctime().lower().replace(' ','_')
         self.model.save('models/{}_{}'.format(round(self.score[1],4),day))
 
     def output_predictions(self):
+        ''' Get predictions based upon trained model for analysis '''
+        # predict classes on test data
         predicted = self.model.predict_classes(self.X_test_norm)
         predicted = predicted.tolist()
         df_predicted = self.X_test_all
+        # add predicted test data to data frame
         df_predicted['predicted'] = predicted
+        # drop np_arrays as they are large, unnecessary at this point and slow down computation
         self.df_predicted = df_predicted.drop('np_array',axis=1)
+        # automatically save with time stamp
+        # set self.filename for using in tree_analysis.py Trees class
         self.filename = 'data/predicted_{}.pkl'.format(time.ctime().replace(' ','_'))
         df_predicted.to_pickle('{}'.format(self.filename))
 
@@ -258,13 +260,5 @@ if __name__ == '__main__':
                         pool = (3, 3),
                         kern_size = (3, 3),
                         colors=3)
-
-
     NN.run_models()
     NN.output_predictions()
-    data = DFOps(filepath_to_df=NN.filename)
-    data.perform_all_ops()
-    data.df.to_pickle('test')
-    trees = TreeData('test','data/labeled_edited.pkl')
-    trees.get_all()
-    print(trees.tfRMSE())

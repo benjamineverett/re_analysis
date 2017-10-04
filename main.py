@@ -65,27 +65,42 @@ def resize_labeled_pics(filepath_to_resize,
     instantiated_class.resize_pics(to_np_array=True)
 
 ''' ---------------- Code for TRAINING neural network ---------------'''
+''' Use cnn.py for tweaking neural network and running, use this function when model is
+returning results that should run through the pipeline
+'''
 def run_NN():
     from cnn import NeuralNetwork
-    instantiated_class = NeuralNetwork()
-    instantiated_class.import_data(label_file_path='data/labeled.pkl',
-                                    array_file_path='data/resized.pkl',
-                                    merge_on='filename')
+    NN = NeuralNetwork()
+    NN.import_data(label_file_path='data/labeled.pkl',
+                    array_file_path='data/resized.pkl',
+                    merge_on='filename')
 
-    instantiated_class.train_test_split(X_col_name='np_array',
-                                        y_col_name='label',
-                                        train_split=0.75)
-    instantiated_class.set_parameters(random_seed=1337,
-                                        batch_size=10,
-                                        classes=10,
-                                        epochs=10,
-                                        image_dims=(100,50),
-                                        num_filters=10,
-                                        pool = (3, 3),
-                                        kern_size = (3, 3),
-                                        colors=3)
-    instantiated_class.run_models()
+    NN.train_test_split(X_col_name='np_array',
+                        y_col_name='label',
+                        train_split=0.8)
 
+    NN.set_parameters(random_seed=17,
+                        batch_size=10,
+                        classes=10,
+                        epochs=10,
+                        image_dims=(100,50),
+                        num_filters=5,
+                        pool = (3, 3),
+                        kern_size = (3, 3),
+                        colors=3)
+    NN.run_models()
+    NN.output_predictions()
+
+    # push throughn DFOps to get data
+    # into correct formate for TreeData
+    data = DFOps(filepath_to_df=NN.filename)
+    data.perform_all_ops()
+    data.df.to_pickle('test')
+
+    # Get back RMSE, precision and recall
+    trees = TreeData('test','data/labeled_edited.pkl')
+    trees.get_all()
+    print(trees.tfRMSE())
 
 
 ''' ---------------- IF NAME MAIN --------------- '''
