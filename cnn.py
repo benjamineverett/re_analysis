@@ -261,4 +261,4 @@ if __name__ == '__main__':
                         kern_size = (3, 3),
                         colors=3)
     NN.run_models()
-    NN.output_predictions()
+    # NN.output_predictions()

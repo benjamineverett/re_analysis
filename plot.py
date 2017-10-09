@@ -22,12 +22,13 @@ import base64
 class Plot(object):
 
     def __init__(self,
-                    starting_loc_map,
-                    zoom,
-                    html_save_to
-                    ):
+                starting_loc_map,
+                zoom,
+                html_save_to,
+                meta_data,
+                labeled_data):
         self.mappy = self._initialize_map(starting_loc_map,zoom)
-        self.df_metadata, self.df_labeled, self.df_predicted = self._get_data()
+        self.df_metadata, self.df_labeled = self._get_data(meta_data,labeled_data)
         self.save_to = '{}.html'.format(html_save_to)
 
     def plot_predicted(self):
@@ -135,9 +136,9 @@ class Plot(object):
         print('--------------- FINISHED -- SAVING MAP ---------------')
         self.mappy.save(outfile=self.save_to)
 
-    def _get_data(self):
+    def _get_data(self,meta_data,labeled_data):
         # return pd.read_pickle('data/meta_data.pkl'), pd.read_pickle('data/all_labels.pkl'), pd.read_pickle('data/all_predicted.pkl')
-        return pd.read_pickle('data/meta_data.pkl'), pd.read_pickle('data/predicted_test_pipeline.pkl'), pd.read_pickle('data/all_predicted.pkl')
+        return pd.read_pickle(meta_data), pd.read_pickle(labeled_data)
 
     def _initialize_map(self,starting_loc_map,zoom):
         # create empty map for folium
@@ -274,10 +275,14 @@ class GSVMetaData(object):
 
 
 if __name__ == '__main__':
-    btown = Plot(starting_loc_map=(39.967254, -75.172137),
+
+    plot = Plot(starting_loc_map=(39.971546, -75.180184),
                     zoom=16,
-                    html_save_to = 'predicted_on_test')
-    btown.plot_point()
+                    html_save_to='html/final_test_results',
+                    meta_data='data/meta_data.pkl',
+                    labeled_data='data/final_predictions_through_DFOps.pkl'
+                    )
+    plot.plot_point()
     # btown = Plot(starting_loc_map=(39.967254, -75.172137),
     #                 zoom=16,
     #                 html_save_to = 'predicted_small_2')

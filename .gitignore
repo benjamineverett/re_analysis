@@ -11,3 +11,4 @@ spark-warehouse/
 backup/
 *.html
 /data/opa
+/html
