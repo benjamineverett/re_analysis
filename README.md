@@ -36,7 +36,11 @@ Curb Appeal is my attempt to capture **one small piece** of the on-the ground fa
 
 3. [Next Steps](#next-steps)
 
-4. [Sources](#sources)
+4. [Tech Stack](#tech-stack)
+
+5. [Sources](#sources)
+
+
 
 
 
@@ -234,9 +238,7 @@ Overall, the model likes seeing a lot of leaves. If it sees leaves an not a trun
 
 My data consists of ~15,000 images, of which ~2,250 are labeled as 'TREE' or approximately an 85%/15% imbalance. I knew that given the small amount of images and imbalanced nature of my data, predicting on the test set would be a challenge. I adjusted the weights within my model to account for this imbalance, however, balanced data would still be best.
 
-**Good criteria?**
 
-I chose very stringent criteria for my model. The goal is to use my model as a feature in real estate price predictions. With this in mind, does being able to see a tree down the block or in the distance affect an individual's purchase decision? If I constructed my model around this hypothesis I'd have a more precise feature to pass into my real estate prediction model and be able to test its' validity.
 
 **Increase complexity of Neural Network**
 
@@ -244,9 +246,21 @@ In my quest to provide a proof of concept, I chose to keep the neural network ve
 
 **Larger images**
 
-My actual images size is 100x50
+The actual size of the images I passed into the neural network were 100x50
 <p align=“center”>
  <img alt="Original Picture" src="images/107_morris_st_philadelphia_pa_19147_pic1.jpg" width=50>
+</p>
+
+I would like to explore images that are a bit larger and see where that gets me.
+
+**Good criteria?**
+
+I chose very stringent criteria for my model. The goal is to use my model as a feature in real estate price predictions. With this in mind, does being able to see a tree down the block or in the distance affect an individual's purchase decision? If I constructed my model around this hypothesis I'd have a more precise feature to pass into my real estate prediction model and be able to test its' validity.
+
+## Tech Stack
+
+<p align=“center”>
+ <img alt="Tech Stack" src="images/tech_stack.png">
 </p>
 
 ## Sources
