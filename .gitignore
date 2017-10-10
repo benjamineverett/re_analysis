@@ -12,3 +12,5 @@ backup/
 *.html
 /data/opa
 /html
+/templates
+app.py

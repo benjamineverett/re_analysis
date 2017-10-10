@@ -158,7 +158,7 @@ I used a Convolutional Neural Network using [Keras](https://keras.io/) and [Tens
 
 1. I trained my model on [AWS](aws.amazon.com) using a p2.8xlarge instance. I used this instance, because being a GPU instance my network took on average about **2 minutes to train**. As a comparison, on my own macbook air it took about 45 minutes to train my model.
 
-2. I decided to keep my network **simple** for experimentation purposes.  I used two convolution layers and one pooling layer.
+2. I decided to keep my network **straight forward** for experimentation purposes.  I used two convolution layers and one pooling layer.
 
 3. Each layer uses the **hyperbolic tangent** activation function, as this produced the best accuracy for my models.
 
@@ -186,75 +186,64 @@ Train the Network:
 
 My data set contains approximately 15,000 images. Therefore the Network trained on  ~9,500 images, validated on ~2,500 images and tested on ~3,000 images.
 
-<p align=“center”>
-	<img alt="recall and precision" src="images/all.png" width=550>
-</p>
+The model achieved the following results on the previously unseen test set.
 
-<p align=“center”>
-	<img alt="recall and precision" src="images/recall.png" width=550>
-</p>
+Accuracy = 87%
 
-The numbers are unequivocally disappointing.
+Precision = 59%
 
-But **most important** is what the data and the trained network are telling me in order for me to **learn** and adjust the model moving forward.
+Recall = 57%
+
+F1 score = .58
+
+Specificity = 93%
+
+RMSE = 3.3
+
+These results are by no means world changing, however, they are results I can build on!
+
+**Most important** is what the data and the trained network are telling me in order for me to **learn** and adjust the model moving forward.
 
 I decided to dig in a little deeper:
 
-**Recall** is not bad. I could give up on some recall in order to gain precision.
-
-<p align=“center”>
-	<img alt="labels" src="images/recall_edited.png" width=550>
-</p>
-
 What is going on with the **false positives** to drive the **precision** down?
-
-<p align=“center”>
-	<img alt="labels" src="images/labels_edited.png" width=550>
-</p>
-
-There are many **False Positives**. Lets see what these false positives are.
 
 #### The Visuals
 
+To see all the predictions in an interactive manner [go here](http://ec2-34-233-124-51.compute-1.amazonaws.com:1717/map)
+
+**Note:** The website takes about 45 seconds to load
+
 Analysis:
 
-The model likes phone poles.
+The model likes phone poles. But specifically, this one makes sense, the phone pole looks like a trunk and the leaves make it look like a trunk with a tree. I can build on this.
 <p align=“center”>
 	<img alt="labels" src="images/phone_pole.png" width=250>
 </p>
 
-The model is overfitting on trees that do not fit my criteria
+The model is overfitting on trees that do not fit my criteria. It definitely likes a lot of green leaves in the picture.
 <p align=“center”>
 	<img alt="labels" src="images/tree.png" width=250>
 </p>
 
-The depth perception of the model is off
-<p align=“center”>
-	<img alt="labels" src="images/depth.png" width=250>
-</p>
-
-The model likes green
-<p align=“center”>
-	<img alt="labels" src="images/green_house.png" width=250>
-</p>
-
-#### The Output
+Overall, the model likes seeing a lot of leaves. If it sees leaves an not a trunk, it still seems likely that it will predict a tree.
 
 ## Next Steps
 
 **Unbalanced data**
+
 My data consists of ~15,000 images, of which ~2,250 are labeled as 'TREE' or approximately an 85%/15% imbalance. I knew that given the small amount of images and imbalanced nature of my data, predicting on the test set would be a challenge. I adjusted the weights within my model to account for this imbalance, however, balanced data would still be best.
 
-**Depth perception**
-Depth perception can be an issue for convolutional neural networks. [This article from Stanford discusses CNN's trouble with depth perception](http://cs231n.stanford.edu/reports/2017/pdfs/200.pdf)
-
 **Good criteria?**
+
 I chose very stringent criteria for my model. The goal is to use my model as a feature in real estate price predictions. With this in mind, does being able to see a tree down the block or in the distance affect an individual's purchase decision? If I constructed my model around this hypothesis I'd have a more precise feature to pass into my real estate prediction model and be able to test its' validity.
 
 **Increase complexity of Neural Network**
-In my quest to provide a proof of concept, I chose to keep the neural network very simple and to live with the results. I could reasonably expect my network to improve with greater depth.
+
+In my quest to provide a proof of concept, I chose to keep the neural network very straight forward and to live with the results. I could reasonably expect my network to improve with greater depth.
 
 **Larger images**
+
 My actual images size is 100x50
 <p align=“center”>
  <img alt="Original Picture" src="images/107_morris_st_philadelphia_pa_19147_pic1.jpg" width=50>
