@@ -7,8 +7,7 @@ Examples formatted as follows:
 Much thanks to google's excellet documentation
 ----- https://developers.google.com/maps/documentation/streetview/intro -----
 '''
-
-import requests # used to execute API calls
+import requests
 import os
 import time
 import pandas as pd
@@ -417,7 +416,6 @@ class FetchImages(object):
 
         # create directory str
         self.directory = '{}'.format(self.save_to)
-        # self.directory = '{}/{}'.format(self.save_to,self.street_name.lower().replace(' ','_'))
         # if directory to save to does not exist, then create it
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
