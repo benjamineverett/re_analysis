@@ -15,15 +15,15 @@ class TreeData(object):
 
     def precision(self,dataframe):
         ''' -- Get PRECISION -- '''
-        precision = dataframe.tp.sum() / (dataframe.tp.sum()+dataframe.fp.sum())
-        self._print_statement('precision', precision)
-        return precision
+        self.precision = dataframe.tp.sum() / (dataframe.tp.sum()+dataframe.fp.sum())
+        self._print_statement('precision', self.precision)
+        return self.precision
 
     def recall(self,dataframe):
         ''' -- Get RECALL -- '''
-        recall = dataframe.tp.sum() / (dataframe.tp.sum() + dataframe.fn.sum())
-        self._print_statement('recall',recall)
-        return recall
+        self.recall = dataframe.tp.sum() / (dataframe.tp.sum() + dataframe.fn.sum())
+        self._print_statement('recall',self.recall)
+        return self.recall
 
     def specificity(self,dataframe):
         ''' -- Get SPECIFICITY -- '''
@@ -103,7 +103,16 @@ class TreeData(object):
             tree_factor_residual = ((row[1].predicted - row[1].label)**2)*(row[1].label/tree_factor)
             squares.append(tree_factor_residual)
         tfRMSE = sum(squares)**(1/2)
+        self._print_statement('RMSE',tfRMSE)
         return tfRMSE
+
+    def f1_score(self):
+        self.f1_score = 2*(1/(1/self.precision + 1/self.recall))
+        self._print_statement('f1 Score',self.f1_score)
+        return self.f1_score
+
+
+
 
 if __name__ == '__main__':
     trees = TreeData('data/predicted_test_pipeline.pkl')

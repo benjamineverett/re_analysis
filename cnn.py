@@ -215,17 +215,17 @@ class NeuralNetwork(object):
         ''' ----- '''
         self.model.add(MaxPooling2D(pool_size=(5,5)))
 
-        self.model.add(Convolution2D(10, 2, 2,
+        self.model.add(Convolution2D(25, 2, 2,
                                 border_mode='valid',
                                 input_shape=(10,5,3)))
         self.model.add(Activation('relu'))
 
-        self.model.add(Convolution2D(10, 2, 2,
+        self.model.add(Convolution2D(25, 2, 2,
                                 border_mode='valid',
                                 input_shape=(10,5,3)))
         self.model.add(Activation('relu'))
 
-        self.model.add(Convolution2D(10, 2, 2,
+        self.model.add(Convolution2D(25, 2, 2,
                                 border_mode='valid',
                                 input_shape=(10,5,3)))
         self.model.add(Activation('relu'))
@@ -240,7 +240,7 @@ class NeuralNetwork(object):
         ''' -- Classification -- '''
         self.model.add(Activation('softmax'))
         self.model.compile(loss='categorical_crossentropy',
-                      optimizer='nadam',
+                      optimizer='adam',
                       metrics=['accuracy'])
 
         tbCallBack = TensorBoard(log_dir='./graph',
@@ -306,3 +306,5 @@ if __name__ == '__main__':
     trees.metric_by_block()
     trees.metric_by_zip()
     trees.get_all()
+    trees.tfRMSE()
+    trees.f1_score()
