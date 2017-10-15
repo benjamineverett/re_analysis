@@ -1,4 +1,4 @@
-# import theano
+    # import theano
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
@@ -59,7 +59,7 @@ class NeuralNetwork(object):
         self.test_array = self.df_test_pics['np_array']
         self.test_array = np.array(list(self.test_array.values))
         # merge df_arrays via left merge on merge_on
-        self.df = df_arrays.merge(df_labels,how='left',on=[merge_on])
+        self.df = df_labels.merge(df_arrays,how='left',on=[merge_on])
 
     def train_test_split(self,X_col_name,y_col_name,train_split):
         '''
@@ -169,6 +169,7 @@ class NeuralNetwork(object):
         self.X_train_norm = X_train / 255
         self.X_test_norm = X_test / 255
 
+
         # convert class vectors to binary class matrices
         Y_train = np_utils.to_categorical(self.y_train, self.nb_classes)
         Y_test = np_utils.to_categorical(self.y_test, self.nb_classes)
@@ -177,33 +178,69 @@ class NeuralNetwork(object):
         self.model = Sequential()
 
         # 2 convolutional layers, followed by a pooling layer, followed by dropout, followed by classification
-        ''' -- Layer 1 -- '''
-        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
-                                border_mode='valid',
-                                input_shape=self.input_shape))
-        self.model.add(Activation('tanh'))
 
-        ''' -- Layer 2 -- '''
-        self.model.add(Convolution2D(self.nb_filters, self.kernel_size[0], self.kernel_size[1],
+        self.model.add(Convolution2D(10, 2, 2,
                                 border_mode='valid',
-                                input_shape=self.input_shape))
-        self.model.add(Activation('tanh'))
+                                input_shape=(100,50,3)))
+        self.model.add(Activation('relu'))
 
-        ''' -- Layer 3 -- '''
-        self.model.add(MaxPooling2D(pool_size=self.pool_size))
-        self.model.add(Dropout(0.25))
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(100,50,3)))
+        self.model.add(Activation('relu'))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(100,50,3)))
+        self.model.add(Activation('relu'))
+
+        ''' ----- '''
+        self.model.add(MaxPooling2D(pool_size=(2,2)))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(50,25,3)))
+        self.model.add(Activation('relu'))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(50,25,3)))
+        self.model.add(Activation('relu'))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(50,25,3)))
+        self.model.add(Activation('relu'))
+
+        ''' ----- '''
+        self.model.add(MaxPooling2D(pool_size=(5,5)))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(10,5,3)))
+        self.model.add(Activation('relu'))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(10,5,3)))
+        self.model.add(Activation('relu'))
+
+        self.model.add(Convolution2D(10, 2, 2,
+                                border_mode='valid',
+                                input_shape=(10,5,3)))
+        self.model.add(Activation('relu'))
 
         # transition to an mlp
         self.model.add(Flatten())
-        self.model.add(Dense(25))
-        self.model.add(Activation('tanh'))
+        self.model.add(Dense(200))
+        self.model.add(Activation('relu'))
         self.model.add(Dropout(0.25))
         self.model.add(Dense(self.nb_classes))
 
         ''' -- Classification -- '''
         self.model.add(Activation('softmax'))
         self.model.compile(loss='categorical_crossentropy',
-                      optimizer='adam',
+                      optimizer='nadam',
                       metrics=['accuracy'])
 
         tbCallBack = TensorBoard(log_dir='./graph',
@@ -243,7 +280,7 @@ class NeuralNetwork(object):
 
 if __name__ == '__main__':
     NN = NeuralNetwork()
-    NN.import_data(label_file_path='data/labeled.pkl',
+    NN.import_data(label_file_path='data/balanced_data.pkl',
                     array_file_path='data/resized.pkl',
                     merge_on='filename')
 
@@ -252,13 +289,20 @@ if __name__ == '__main__':
                         train_split=0.8)
 
     NN.set_parameters(random_seed=17,
-                        batch_size=10,
-                        classes=10,
+                        batch_size=100,
+                        classes=2,
                         epochs=10,
                         image_dims=(100,50),
-                        num_filters=5,
+                        num_filters=3,
                         pool = (3, 3),
                         kern_size = (3, 3),
                         colors=3)
     NN.run_models()
-    # NN.output_predictions()
+    NN.output_predictions()
+    ops = DFOps(NN.filename)
+    ops.perform_all_ops()
+    ops.to_pickle(new_file_name='data/predicted_test_pipeline.pkl')
+    trees = TreeData('data/predicted_test_pipeline.pkl', 'data/all_labels.pkl')
+    trees.metric_by_block()
+    trees.metric_by_zip()
+    trees.get_all()
